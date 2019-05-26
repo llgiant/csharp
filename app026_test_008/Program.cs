@@ -21,11 +21,12 @@ class Program
          * 2) Выписать через запятую все слова оканчивающиеся на букау "а"
          * 3) Выписать через запятую все слова с буквами "п" и "о"
          * 4) Посчитать среднюю длину слов в тексте
-         * 5) Выписать через запятую количество симолоа между символами "Lorem"
+         * 5) Выписать через запятую количество символов между словами "Lorem"
          * 6) Выписсать построчно все предлоожения из текста.
          */
-		string text = "рLorem Ipsum \"р\" - это текст-\"рыба\", часто используемый в печати и вэб-дизайне.Lorem Ipsum является стандартной \"рыбой\" для текстов на латинице с начала XVI века. В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, используя Lorem Ipsum для распечатки образцов. Lorem Ipsum не только успешно пережил без заметных изменений пять веков, но и перешагнул в электронный дизайн. Его популяризации в новое время послужили публикация листов Letraset с образцами Lorem Ipsum в 60-х годах и, в более недавнее время, программы электронной вёрстки типа Aldus PageMaker, в шаблонах которых используется Lorem Ipsum. Многие думают, что Lorem Ipsum - взятый с потолка псевдо-латинский набор слов, но это не совсем так. Его корни уходят в один фрагмент классической латыни 45 года н.э., то есть более двух тысячелетий назад. Ричард МакКлинток, профессор латыни из колледжа Hampden-Sydney, штат Вирджиния, взял одно из самых странных слов в Lorem Ipsum, \"consectetur\", и занялся его поисками в классической латинской литературе. В результате он нашёл неоспоримый первоисточник Lorem Ipsum. Есть много вариантов Lorem Ipsum, но большинство из них имеет не всегда приемлемые модификации, например, юмористические вставки или слова, которые даже отдалённо не напоминают латынь. Если вам нужен Lorem Ipsum для серьёзного проекта, вы наверняка не хотите какой-нибудь шутки, скрытой в середине абзаца. Также все другие известные генераторы Lorem Ipsum используют один и тот же текст, который они просто повторяют, пока не достигнут нужный объём. Это делает предлагаемый здесь генератор единственным настоящим Lorem Ipsum генератором. Он использует словарь из более чем 200 латинских слов, а также набор моделей предложений. В результате сгенерированный Lorem Ipsum выглядит правдоподобно, не имеет повторяющихся абзацей или \"невозможных\" слов.р";
-		string startsWithP = "";
+		string text = "рLorem Ipsum \"р\" - это текст-\"рыба\", часто используемый в печати и вэб-дизайне. Lorem Ipsum является стандартной \"рыбой\" для текстов на латинице с начала XVI века. В то время некий безымянный печатник создал большую коллекцию размеров и форм шрифтов, используя Lorem Ipsum для распечатки образцов. Lorem Ipsum не только успешно пережил без заметных изменений пять веков, но и перешагнул в электронный дизайн. Его популяризации в новое время послужили публикация листов Letraset с образцами Lorem Ipsum в 60-х годах и, в более недавнее время, программы электронной вёрстки типа Aldus PageMaker, в шаблонах которых используется Lorem Ipsum. Многие думают, что Lorem Ipsum - взятый с потолка псевдо-латинский набор слов, но это не совсем так. Его корни уходят в один фрагмент классической латыни 45 года н.э., то есть более двух тысячелетий назад. Ричард МакКлинток, профессор латыни из колледжа Hampden-Sydney, штат Вирджиния, взял одно из самых странных слов в Lorem Ipsum, \"consectetur\", и занялся его поисками в классической латинской литературе. В результате он нашёл неоспоримый первоисточник Lorem Ipsum. Есть много вариантов Lorem Ipsum, но большинство из них имеет не всегда приемлемые модификации, например, юмористические вставки или слова, которые даже отдалённо не напоминают латынь. Если вам нужен Lorem Ipsum для серьёзного проекта, вы наверняка не хотите какой-нибудь шутки, скрытой в середине абзаца. Также все другие известные генераторы Lorem Ipsum используют один и тот же текст, который они просто повторяют, пока не достигнут нужный объём. Это делает предлагаемый здесь генератор единственным настоящим Lorem Ipsum генератором. Он использует словарь из более чем 200 латинских слов, а также набор моделей предложений. В результате сгенерированный Lorem Ipsum выглядит правдоподобно, не имеет повторяющихся абзацей или \"невозможных\" слов.р"
+		 ";
+		//string startsWithP = "";
 		string endsWithA = "";
 
 		string toLowerText = text.ToLower();
@@ -39,8 +40,9 @@ class Program
 
 		while (true) // 1) Выписать через запятую все слова начинающиеся на букау "р"
 		{
-			if (carret < 0) { break; }
+
 			carret = toLowerText.IndexOf("р", carret); // положение каретки
+			if (carret < 0) { break; }
 			if (carret == text.Length - 1) { break; }
 
 			if (carret > 0 && char.IsLetter(toLowerText[carret - 1]) && carret <= text.Length) { carret++; }
@@ -87,59 +89,124 @@ class Program
 
 		}
 		carret = 0;
-		String wodsWithPO = "";
+		String wordsWithPO = "";
 		int carretP = 0;
 		int carretO = 0;
-		bool isOneWord = true;
+		bool inOneWord = true;
 		indexStartWord = 0;
 		indexEndWord = 0;
 		word = "";
+		int indexLeft = 0;
+		int indexRight = 0;
 
 		while (true) // 3) Выписать через запятую все слова с буквами "п" и "о"
 		{
 			if (carretP < 0 || carretO < 0) { break; }
-			carretP = toLowerText.IndexOf("п", carret); // положение каретки "п"
-			carretO = toLowerText.IndexOf("о", carret); // положение каретки "о"
+			if (carretO > text.Length || carretP > text.Length) { break; }
+			carretP = toLowerText.IndexOf("п", carretP); // положение каретки "п"
+			carretO = toLowerText.IndexOf("о", carretO); // положение каретки "о"
+			notInOneWord:
+			inOneWord = true;
 			if (carretO == text.Length - 1 || carretP == text.Length - 1) { break; }
 			if (carretO > carretP)
 			{
 				for (int index = carretP + 1; index < carretO; index++) // смотрим если найденные буквы в оодинаковых
 				{
-					if (!char.IsLetter(toLowerText[index]))
+					if (!char.IsLetter(toLowerText[index])) // если находим далее не букву, то искомые символы не в одном слове
 					{
-						isOneWord = false;
+						inOneWord = false;
 						break;
 					}
 				}
-				if (!isOneWord) { break; }
+				if (!inOneWord)
+				{
+					carretP = toLowerText.IndexOf("п", carretP + 1); // если буквы не в одном слове ищем букву с меньшим индексом далее
+					goto notInOneWord;
+				}
 				else
 				{
-					if (carretP == 0 || !char.IsLetter(text[carretP - 1]))
+					if (carretP == 0 || !char.IsLetter(text[carretP - 1])) { break; }
+					else
 					{
-						for (int index = carretP + 1; index < text.Length; index++)
+						for (indexLeft = carretP - 1; indexLeft > 0; indexLeft--)
 						{
-							if (!char.IsLetter(toLowerText[index]))
+							if (!char.IsLetter(toLowerText[indexLeft]))
 							{
-								indexEndWord = index;
+								indexStartWord = indexLeft + 1;
 								break;
 							}
 						}
-						word = text.Substring(carretP, indexEndWord - carret); // формирование слова
-						if (wodsWithPO.Length > 0) { startsWithP += ", "; }
-						wodsWithPO += word;
-						carretP += word.Length;
+						for (indexRight = carretP + 1; indexRight <= text.Length; indexRight++)
+						{
+							if (indexRight == text.Length || !char.IsLetter(toLowerText[indexRight]))
+							{
+								indexEndWord = indexRight;
+
+								break;
+							}
+						}
+						word = text.Substring(indexStartWord, indexEndWord - indexStartWord); // формирование слова
+						if (wordsWithPO.Length > 0) { wordsWithPO += ", "; }
+						wordsWithPO += word;
+						carretO = indexRight + 1;
+						carretP = carretO;
+
+
+					}
+				}
+			}
+
+			else
+			{
+				for (int index = carretO + 1; index < carretP; index++) // смотрим если найденные буквы в оодинаковых
+				{
+					if (!char.IsLetter(toLowerText[index])) // если находим далее не букву, то искомые символы не в одном слове
+					{
+						inOneWord = false;
+						break;
+					}
+				}
+				if (!inOneWord)
+				{
+					carretO = toLowerText.IndexOf("о", carretO + 1); // если буквы не в одном слове ищем букву с меньшим индексом далее
+					goto notInOneWord;
+				}
+				else
+				{
+					if (carretO == 0 || !char.IsLetter(text[carretO - 1])) { break; }
+					else
+					{
+						for (indexLeft = carretO - 1; indexLeft > 0; indexLeft--)
+						{
+							if (!char.IsLetter(toLowerText[indexLeft]))
+							{
+								indexStartWord = indexLeft;
+								break;
+							}
+						}
+						for (indexRight = carretO + 1; indexRight < text.Length; indexRight++)
+						{
+							if (!char.IsLetter(toLowerText[indexRight]))
+							{
+								indexEndWord = indexRight;
+								break;
+							}
+						}
+						word = text.Substring(indexStartWord, indexEndWord - indexStartWord + 1); // формирование слова
+						if (wordsWithPO.Length > 0) { wordsWithPO += ", "; }
+						wordsWithPO += word;
+						carretP = indexRight + 1;
+						carretO = carretP;
 					}
 				}
 
+
+
 			}
-
-
 		}
-
-
-		Console.WriteLine($"Cлова начинающиеся на букау \"Р\": { startsWithP}");// Выписать через запятую все слова начинающиеся на букау "Р"
-
+		Console.WriteLine($"Cлова начинающиеся на букау \"Р\": { startsWithP}");
 		Console.WriteLine($"Cлова оканчивающиеся на букву \"а\": { endsWithA}");
+		Console.WriteLine($"Cлова с буквами \"п\" и \"о\": { wordsWithPO}");
 
 		appExit:
 		Console.WriteLine();
@@ -147,7 +214,6 @@ class Program
 		Console.WriteLine("Выйти из программы [y/n]?");
 		string eq = Console.ReadLine();
 		if (eq == "n" || eq == "N") { goto appBegin; }
-
 	}
 }
 
