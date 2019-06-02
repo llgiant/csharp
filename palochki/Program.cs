@@ -12,19 +12,19 @@ class Program
         Console.WriteLine();
     appBegin:
         char[] palochki = new char[] { '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|' };
-        char[] input = new char[]    { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't' };
+        char[] input = new char[] { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't' };
         char[] inputCheck = new char[20];
 
         Console.WriteLine("Выбирете игру:\n1 - играть против человека");
         Console.WriteLine("2 - играть против машины");
         int chooseGame = int.Parse(Console.ReadLine());
-        
+
         if (chooseGame > 2 || chooseGame < 1) //Выбор игры против компьютера и человека
         {
             Console.WriteLine($"Такой игры нет в списке");
             goto appBegin;
         }
-        
+
 
         if (chooseGame == 1) //Игра против человека
         {
@@ -42,7 +42,7 @@ class Program
 
 
         }
-    
+
     appExit:
         Console.WriteLine();
         Console.WriteLine("========================================================================");
