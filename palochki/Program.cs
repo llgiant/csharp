@@ -13,28 +13,28 @@ class Program
 		Console.WriteLine("Игроки ходят по очереди, вводят от 1 до 3 букв палочки над которыми надо убрать.\nПроигрывает тот, кто последний уберет последнюю палочку или 3 палочки.\nУспехов ВАМ!!!\n");
 		appBegin:
 		char[] palochki = new char[] { '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|', '|' };
+		//char[] palochki = new char[] { '|', '|', '|', '|' };
+		//char[] letters = new char[] { 'a', 'b', 'c', 'd' };
 		char[] letters = new char[] { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't' };
 		string inputCheckStr = "";
 		bool isFirstPlayerTurn = true;
 		bool gameWithComp = false;
-		int coutStick = 0;
+		int countStick = 0;
 		string userStepStr = "";
 		int number = 0;
 		char compInput = ' ';
 		Console.WriteLine("Выбирете игру:\n1 - играть против человека");
 		Console.WriteLine("2 - играть против машины");
-		int chooseGame = int.Parse(Console.ReadLine());
-		if (chooseGame > 2 || chooseGame < 1) //Выбор игры против компьютера и человека
+		int chooseGame = int.Parse(Console.ReadLine()); //Выбор игры против компьютера или человека
+		if (chooseGame > 2 || chooseGame < 1)
 		{
 			Console.WriteLine($"Такой игры нет в списке");
 			goto appBegin;
 		}
 		if (chooseGame == 2) { gameWithComp = true; }
-
-		nextRound:
-		foreach (char letter in palochki) { Console.Write(letter + " "); }
+		foreach (char letter in palochki) { Console.Write(letter + " "); } //Распечатываем палки
 		Console.WriteLine();
-		foreach (char letter in letters) { Console.Write(letter + " "); }
+		foreach (char letter in letters) { Console.Write(letter + " "); } //Распечатываем буквы
 		Console.WriteLine();
 		inputUser:
 		userStepStr = "";
@@ -51,13 +51,12 @@ class Program
 		else if (!isFirstPlayerTurn && gameWithComp)
 		{
 			Console.WriteLine("Ход компьютера:");
-			number = rnd.Next(1, 3);
-
+			number = rnd.Next(1, 4);
 			for (int index = 0; index < number; index++)
 			{
 				while (true)
 				{
-					compInput = Convert.ToChar(rnd.Next(97, 116)); //Проверка вводились ли символы ранее
+					compInput = Convert.ToChar(rnd.Next(97, 117)); //Проверка вводились ли символы ранее
 					if (!inputCheckStr.Contains(compInput + "")) { break; }
 				}
 				userStepStr += compInput + "";
@@ -67,9 +66,8 @@ class Program
 
 		if (!string.IsNullOrWhiteSpace(userStepStr) && userStepStr.Length < 4) //Проверяем валидацию ввода не больше 3х букв
 		{
-			char[] userStep = userStepStr.ToCharArray();
-
-			foreach (char letter in userStep)
+			char[] userStepArr = userStepStr.ToCharArray();
+			foreach (char letter in userStepArr)
 			{
 				if (inputCheckStr.Contains(letter + "")) //Проверка вводились ли символы ранее
 				{
@@ -87,66 +85,75 @@ class Program
 					goto inputUser;
 				}
 			}
-			if (userStep.Length == 2) //Проверка не совпадают ли какие-либо из 2х введенных символов
+
+			if (userStepArr.Length == 2) //Проверка не совпадают ли какие-либо из 2х введенных символов
 			{
-				if (userStep[0] == userStep[1])
+				if (userStepArr[0] == userStepArr[1])
 				{
 					Console.WriteLine("Есть одинаковые буквы, повторите ход");
 					goto inputUser;
 				}
 			}
-			else if (userStep.Length == 3) //Проверка не совпадают ли какие-либо из 3х введенных символов
+			else if (userStepArr.Length == 3) //Проверка не совпадают ли какие-либо из 3х введенных символов
 			{
-				if (userStep[0] == userStep[1] || userStep[0] == userStep[2] || userStep[1] == userStep[2])
+				if (userStepArr[0] == userStepArr[1] || userStepArr[0] == userStepArr[2] || userStepArr[1] == userStepArr[2])
 				{
 					Console.WriteLine("Есть одинаковые буквы, повторите ход");
 					goto inputUser;
 				}
 			}
-			foreach (char letter in userStep)
+
+			foreach (char letter in userStepArr)
 			{
-				coutStick++;
+				countStick++; //Счтаю палочки
 				for (int index = 0; index < letters.Length; index++)
 				{
 					if (letters[index] == letter)
 					{
-						inputCheckStr += letter;
-						palochki[index] = ' ';
+						inputCheckStr += letter; // Добавляю новую букву в словарь для проверки сл ввода
+						palochki[index] = ' '; // Удаляем палочки
 						break;
 					}
 				}
 			}
-			if (coutStick == palochki.Length)
+
+			foreach (char letter in palochki) { Console.Write(letter + " "); } //Распечатываем палки
+			Console.WriteLine();
+			foreach (char letter in letters) { Console.Write(letter + " "); } //Распечатываем буквы
+			Console.WriteLine();
+
+			if (countStick == letters.Length) //Проверка на победителя
 			{
+
 				if (isFirstPlayerTurn && !gameWithComp)
 				{
 					Console.WriteLine("Ходов не осталоь! Пбедил второй игрок!");
 					goto appExit;
 				}
-				else if (!isFirstPlayerTurn && !gameWithComp)
+				else if (!isFirstPlayerTurn && gameWithComp)
 				{
 					Console.WriteLine("Ходов не осталоь! Пбедил первый игрок!");
 					goto appExit;
 				}
-				else if (!isFirstPlayerTurn && !gameWithComp)
+				else if (isFirstPlayerTurn && gameWithComp)
 				{
 					Console.WriteLine("Ходов не осталоь! Пбедил компьютер!");
 					goto appExit;
 				}
 			}
 			isFirstPlayerTurn = !isFirstPlayerTurn;
-			goto nextRound;
+			goto inputUser;
 		}
 		else
 		{
 			Console.WriteLine("Вы ввели больше 3х букв или строка ввода пуста, повторите ход");
-			goto nextRound;
+			goto inputUser;
 		}
 		appExit:
 		Console.WriteLine();
 		Console.WriteLine("========================================================================");
-		Console.WriteLine("Выйти из программы [y/n]?");
+		Console.WriteLine("Сыграть еще раз? [y/n]?");
 		string eq = Console.ReadLine();
-		if (eq == "n" || eq == "N") { goto appBegin; }
+		if (eq == "y" || eq == "Y") { goto appBegin; }
 	}
 }
