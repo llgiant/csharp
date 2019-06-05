@@ -59,6 +59,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "app026_test_008", "app026_t
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "app027_test_009_palochki", "palochki\app027_test_009_palochki.csproj", "{83B698D6-FD30-4A87-9CD5-D43A7F6D8946}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "app029_test_009_palki2", "app029_test_009_palki2\app029_test_009_palki2.csproj", "{4DD3A1AD-AA66-49AE-A10A-43F5C85E1466}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -177,6 +179,10 @@ Global
 		{83B698D6-FD30-4A87-9CD5-D43A7F6D8946}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83B698D6-FD30-4A87-9CD5-D43A7F6D8946}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83B698D6-FD30-4A87-9CD5-D43A7F6D8946}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DD3A1AD-AA66-49AE-A10A-43F5C85E1466}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DD3A1AD-AA66-49AE-A10A-43F5C85E1466}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DD3A1AD-AA66-49AE-A10A-43F5C85E1466}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DD3A1AD-AA66-49AE-A10A-43F5C85E1466}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
