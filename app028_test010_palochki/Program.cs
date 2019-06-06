@@ -20,7 +20,7 @@ class Program
 		int ostatok = 20;
 		bool stepIsHuman = true;
 		int removed = 0;
-
+		bool stepIsFirstPlayer = true;
 
 		while (true)
 		{
@@ -29,7 +29,7 @@ class Program
 			for (int i = 0; i < 20; i++) { Console.Write((char)(i + 97) + " "); }
 			Console.WriteLine();
 
-			if (stepIsHuman) //Ход польозователя
+			if (stepIsFirstPlayer) //Ход польозователя
 			{
 				Console.WriteLine("\nВаш ход:");
 				inputLetters:
@@ -73,27 +73,12 @@ class Program
 			}
 			else //Ход компьютера
 			{
-				Console.WriteLine("\nХод компьютера:");
-				removed = ostatok > 4 ? (ostatok % 4) - 1 : ostatok - 1;
-				if (removed < 1) { removed = 1; }
-
-				for (int i = 0; i < palki.Length; i++)
-				{
-					if (palki[i])
-					{
-						palki[i] = false;
-						ostatok--;
-						removed--;
-						Console.Write((char)(i + 97));
-					}
-					if (removed == 0) { break; }
-				}
-				Console.WriteLine();
+				
 			}
 			if (ostatok == 0)
 			{
 				//Конец игры, объявить победителя и програвшего
-				Console.WriteLine($"Ходов не осталоь! Пбедил {(stepIsHuman ? "компьютер" : "человек")}!");
+				Console.WriteLine($"Ходов не осталоь! Пбедил {(stepIsHuman ? "человек" : "компьютер")}!");
 				break;
 			}
 
