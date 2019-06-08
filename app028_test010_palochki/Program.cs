@@ -18,9 +18,8 @@ class Program
 		string letters = "";
 		string normalize = "";
 		int ostatok = 20;
-		bool stepIsHuman = true;
-		int removed = 0;
 		bool stepIsFirstPlayer = true;
+		int removed = 0;
 
 		while (true)
 		{
@@ -28,61 +27,55 @@ class Program
 			Console.WriteLine();
 			for (int i = 0; i < 20; i++) { Console.Write((char)(i + 97) + " "); }
 			Console.WriteLine();
-
-			if (stepIsFirstPlayer) //Ход польозователя
+			Console.WriteLine($"Ходит {(stepIsFirstPlayer ? "первый игрок" : "второй игрок")}!");
+			inputLetters:
+			normalize = "";
+			letters = Console.ReadLine().Trim().ToLower();
+			if (string.IsNullOrWhiteSpace(letters))
 			{
-				Console.WriteLine("\nВаш ход:");
-				inputLetters:
-				normalize = "";
-				letters = Console.ReadLine().Trim().ToLower();
-				if (string.IsNullOrWhiteSpace(letters))
+				Console.WriteLine("Укажите буквы 1-3 палочек:");
+				goto inputLetters;
+			}
+			else if (letters.Length > 3)
+			{
+				Console.WriteLine("Можно выбрать не более трех палочек.\nПовторите:");
+				goto inputLetters;
+			}
+
+			foreach (char L in letters)
+			{
+				if (!"abcdefghijklmnopqrst".Contains(L.ToString()))
 				{
-					Console.WriteLine("Укажите буквы 1-3 палочек:");
+					Console.WriteLine($"Палочки с именем '{L}' нет в игре.\nПовторите:");
 					goto inputLetters;
 				}
-				else if (letters.Length > 3)
+				if (normalize.Contains(L.ToString()))
 				{
-					Console.WriteLine("Можно выбрать не более трех палочек.\nПовторите:");
+					Console.WriteLine($"Палочка с именем '{L}' уже указана.\nПовторите:");
 					goto inputLetters;
 				}
-
-				foreach (char L in letters)
-				{
-					if (!"abcdefghijklmnopqrst".Contains(L.ToString()))
-					{
-						Console.WriteLine($"Палочки с именем '{L}' нет в игре.\nПовторите:");
-						goto inputLetters;
-					}
-					if (normalize.Contains(L.ToString()))
-					{
-						Console.WriteLine($"Палочка с именем '{L}' уже указана.\nПовторите:");
-						goto inputLetters;
-					}
-					normalize += L;
-				}
-
-				foreach (char L in normalize)
-				{
-					if (!palki[L - 97])
-					{
-						Console.WriteLine($"Палочка с именем '{L}' уже убрана.\nПовторите:");
-						goto inputLetters;
-					}
-				}
-				foreach (char L in normalize) { palki[L - 97] = false; ostatok--; }
+				normalize += L;
 			}
-			else //Ход компьютера
+
+			foreach (char L in normalize)
 			{
-				
+				if (!palki[L - 97])
+				{
+					Console.WriteLine($"Палочка с именем '{L}' уже убрана.\nПовторите:");
+					goto inputLetters;
+				}
 			}
+			foreach (char L in normalize) { palki[L - 97] = false; ostatok--; }
+
+
 			if (ostatok == 0)
 			{
 				//Конец игры, объявить победителя и програвшего
-				Console.WriteLine($"Ходов не осталоь! Пбедил {(stepIsHuman ? "человек" : "компьютер")}!");
+				Console.WriteLine($"Ходов не осталоь! Пбедил {(stepIsFirstPlayer ? "Второй игрок" : "Первый игрок")}!");
 				break;
 			}
 
-			stepIsHuman = !stepIsHuman;
+			stepIsFirstPlayer = !stepIsFirstPlayer;
 		}
 		appExit:
 		Console.WriteLine();
