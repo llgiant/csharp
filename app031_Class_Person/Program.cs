@@ -14,7 +14,21 @@ class Program
 		Console.WriteLine();
 		appBegin:
 
+		Console.WriteLine("\nВведите свое имя:");
+		Person user = new Person();
+		user.FirstName = Console.ReadLine();
 
+		Console.WriteLine("\nВведите свою фамилию:");
+		user.LastName = Console.ReadLine();
+
+		Console.WriteLine("\nСколько вам лет?:");
+		user.OldYears = int.Parse(Console.ReadLine());
+
+		Console.WriteLine("\nВведите пол: \"m\", если вы мужчина и \"f\", если вы женщина:");
+		if (Console.ReadLine().Trim().ToLower() == "m") { user.IsMale = true;  }
+		else if(Console.ReadLine().Trim().ToLower() == "m") { user.IsMale = false; }
+
+		Console.WriteLine("\nПолное имя: " + user.FullName);
 
 		appExit:
 		Console.WriteLine();

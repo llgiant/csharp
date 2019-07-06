@@ -65,6 +65,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "app028_test_010_palochki", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "app030_functions", "app030_functions\app030_functions.csproj", "{D41B15A3-E65B-441A-83E2-1FA1795F836C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "app031_class_person", "app031_Class_Person\app031_class_person.csproj", "{62D4C8BF-C451-4845-9EA8-625EB014E654}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -195,6 +197,10 @@ Global
 		{D41B15A3-E65B-441A-83E2-1FA1795F836C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D41B15A3-E65B-441A-83E2-1FA1795F836C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D41B15A3-E65B-441A-83E2-1FA1795F836C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62D4C8BF-C451-4845-9EA8-625EB014E654}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62D4C8BF-C451-4845-9EA8-625EB014E654}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62D4C8BF-C451-4845-9EA8-625EB014E654}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62D4C8BF-C451-4845-9EA8-625EB014E654}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
