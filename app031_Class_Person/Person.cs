@@ -20,8 +20,9 @@ class Person
 		get { return _firstName; }
 		set
 		{
-			if (!string.IsNullOrWhiteSpace(value))
+			if (_validation(value) == "Строка прошла валидацию")
 			{
+				value = _normalize(value);
 				_firstName = value;
 			}
 		}
@@ -30,7 +31,15 @@ class Person
 	public string LastName
 	{
 		get { return _lastName; }
-		set { _lastName = value; }
+		set
+		{
+			if (_validation(value) == "Строка прошла валидацию")
+			{
+				value = _normalize(value);
+				_lastName = value;
+			}
+
+		}
 	}
 
 	public int OldYears
@@ -51,58 +60,67 @@ class Person
 		set { _isMale = value; }
 	}
 
-	public string FullName { get { return (_firstName + " " + _lastName).Trim() + _oldYears + "лет"; } }
-
+	public string FullName { get { return (_firstName + " " + _lastName).Trim(); } }
 	#endregion
 
 	#region "Функции"
-	public static string Validation(string name)
+	private static string _validation(string name)
 	{
-		int count = 0;
-		if (string.IsNullOrWhiteSpace(name)) { return "Имя не задано или состоит только из пробелов"; }
+		int count = 0; // счетчик дефисоф
+		if (string.IsNullOrWhiteSpace(name)) { return "Строка не прошла валидацию"; }
 
 		foreach (char letter in name)
 		{
 			if (!char.IsLetter(letter))
 			{
-				if (letter == '-') { continue; count++ }
-				else { return "Имя должно содержать только буквы"; }
+				if (letter == '-' && count < 1) { count++; continue; }
+				else if (char.IsWhiteSpace(letter)) { continue; }
+				else { return "Строка не прошла валидацию"; }
 			}
 		}
-		return "";
+		return "Строка прошла валидацию";
 	}
 
-	public static string Normalize(string name)
+	private static string _normalize(string name)
 	{
-		char predSym = ' ';
+		int count = 0;          //Счетчик начала слова
+		char predSym = ' ';     // Предыдущая буква
 		char sledSym = ' ';
+		String modName = "";
 		String newName = "";
+		int index = 0;          // Индекс строкового массива newName
 
-
-
-		for (int i = 0; i < name.Length; i++)
+		if (name.Contains(' '))
 		{
-			if (i + 1 != name.Length) { sledSym = name[i + 1]; }
-			if (char.IsWhiteSpace(name[i]) || name[0] == '-') { continue; } //проверка на пробелы и на тире в первом символе
-			if ((char.IsLetter(name[i]) && predSym == ' ') || char.IsLetter(name[i]) && predSym == '-')
-			{
-
-				newName += char.ToUpper(name[i]);
-			}
-			else
-			{
-				if (!char.IsLetter(sledSym)) { newName += ' '; continue; }
-				newName += char.ToLower(name[i]);
-			}
-
-			predSym = name[i];
+			foreach (char letter in name) { if (letter == ' ') { continue; } else { modName += letter; } }
 		}
 
+		foreach (char letter in modName)
+		{
+			if (index + 1 != modName.Length) { sledSym = modName[index + 1]; }
 
+			if (char.IsLetter(letter))
+			{
+				count++;
+				if (count == 1) { newName += char.ToUpper(letter); }
+				else { newName += char.ToLower(letter); }
+			}
+			else if (letter == '-' && char.IsLetter(predSym) && char.IsLetter(sledSym))
+			{
+				newName += letter;
+				count = 0;
+			}
+			predSym = letter;
+			index++;
 
+		}
+
+		for (index = 0; index < name.Length; index++)
+		{
+
+		}
 		return newName;
 	}
-
 	#endregion
 
 
