@@ -14,13 +14,13 @@ class Person
 	private bool _isMale;
 	#endregion
 
-	#region "Свойства переменных"
+	#region "Свойства"
 	public string FirstName
 	{
 		get { return _firstName; }
 		set
 		{
-			if (_validation(value) == "Строка прошла валидацию")
+			if (_validation(value) == "")
 			{
 				value = _normalize(value);
 				_firstName = value;
@@ -33,7 +33,7 @@ class Person
 		get { return _lastName; }
 		set
 		{
-			if (_validation(value) == "Строка прошла валидацию")
+			if (_validation(value) == "")
 			{
 				value = _normalize(value);
 				_lastName = value;
@@ -67,7 +67,7 @@ class Person
 	private static string _validation(string name)
 	{
 		int count = 0; // счетчик дефисоф
-		if (string.IsNullOrWhiteSpace(name)) { return "Строка не прошла валидацию"; }
+		if (string.IsNullOrWhiteSpace(name)) { return " "; }
 
 		foreach (char letter in name)
 		{
@@ -75,51 +75,24 @@ class Person
 			{
 				if (letter == '-' && count < 1) { count++; continue; }
 				else if (char.IsWhiteSpace(letter)) { continue; }
-				else { return "Строка не прошла валидацию"; }
+				else { return "Ошибка в имени/фамилии, введены не буквы"; }
 			}
 		}
-		return "Строка прошла валидацию";
+		return string.Empty;
 	}
 
 	private static string _normalize(string name)
 	{
-		int count = 0;          //Счетчик начала слова
-		char predSym = ' ';     // Предыдущая буква
-		char sledSym = ' ';
-		String modName = "";
-		String newName = "";
-		int index = 0;          // Индекс строкового массива newName
+		name = name.Trim().ToLower().Replace(" ", "");
 
-		if (name.Contains(' '))
+		string[] split = name.Split(new Char[] { '-' });
+		string partName = "";
+		for (int index = 0; index < split.Length; index++)
 		{
-			foreach (char letter in name) { if (letter == ' ') { continue; } else { modName += letter; } }
+			partName = split[index];
+			split[index] = char.ToUpper(partName[0]) + partName.Substring(1);
 		}
-
-		foreach (char letter in modName)
-		{
-			if (index + 1 != modName.Length) { sledSym = modName[index + 1]; }
-
-			if (char.IsLetter(letter))
-			{
-				count++;
-				if (count == 1) { newName += char.ToUpper(letter); }
-				else { newName += char.ToLower(letter); }
-			}
-			else if (letter == '-' && char.IsLetter(predSym) && char.IsLetter(sledSym))
-			{
-				newName += letter;
-				count = 0;
-			}
-			predSym = letter;
-			index++;
-
-		}
-
-		for (index = 0; index < name.Length; index++)
-		{
-
-		}
-		return newName;
+		return string.Join("-", split);
 	}
 	#endregion
 
