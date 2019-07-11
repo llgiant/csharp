@@ -7,11 +7,22 @@ using System.Threading.Tasks;
 
 class Person
 {
-	#region "Локальные переменные"
+	#region " Локальные переменные "
 	private string _firstName;
 	private string _lastName;
 	private int _oldYears;
 	private bool _isMale;
+	#endregion
+
+	#region " Конструкторы "
+	public Person() : this("", "", false) { }
+	public Person(string firstName, string lastName) : this(firstName, lastName, false) { }
+	public Person(string firstName, string lastName, bool isMale)
+	{
+		FirstName = firstName;
+		LastName = lastName;
+		IsMale = isMale;
+	}
 	#endregion
 
 	#region "Свойства"
