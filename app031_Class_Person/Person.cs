@@ -20,11 +20,8 @@ class Person
 		get { return _firstName; }
 		set
 		{
-			if (_validation(value) == "")
-			{
-				value = _normalize(value);
-				_firstName = value;
-			}
+			if (_validation(value) != "") { return; }
+			_firstName = _normalize(value);
 		}
 	}
 
@@ -33,12 +30,8 @@ class Person
 		get { return _lastName; }
 		set
 		{
-			if (_validation(value) == "")
-			{
-				value = _normalize(value);
-				_lastName = value;
-			}
-
+			if (_validation(value) != "") { return; }
+			_lastName = _normalize(value);
 		}
 	}
 
@@ -95,7 +88,5 @@ class Person
 		return string.Join("-", split);
 	}
 	#endregion
-
-
 }
 
