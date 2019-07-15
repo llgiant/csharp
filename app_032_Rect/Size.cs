@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 class Size
 {
+
 	#region Переменные
 	double _width = 1;
 	double _height = 1;
