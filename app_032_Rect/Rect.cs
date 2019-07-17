@@ -91,9 +91,6 @@ class Rect
 		newRect._point = new Point(_point.X + (newSize.Width - _size.Width) / 2, _point.Y + (newSize.Height - _size.Height) / 2);
 		return newRect;
 	}
-
-
-
 	public Rect Scale(double factor, double x, double y)
 	{
 		Rect newRect = new Rect();
@@ -105,17 +102,19 @@ class Rect
 	}
 	public bool ContainsPoint(double x, double y)
 	{
-		if ((x < _point.X && x > _point.X + _size.Width) && (y < _point.Y - _size.Height && y > _point.Y)) { return false; }
+		if ((x < Left && x > Right) && (y < Top  && y > Bottom)) { return false; }
 		return true;
 	}
 	public bool ContainsPoint(Point point)
 	{
-		if ((point.X < _point.X && point.X > _point.X + _size.Width) && (point.Y < _point.Y - _size.Height && point.Y > _point.Y)) { return false; }
+		if ((point.X < Left && point.X > Right) && (point.Y < Top && point.Y > Bottom)) { return false; }
 		return true;
 	}
 	public bool ContainsRect(Rect rect)
 	{
 		//проверка площади прямоугольника если меньше, то
+		if(rect.Square > Square) { return false; }
+
 		return true;
 	}
 	public Rect Union(Rect rect)
