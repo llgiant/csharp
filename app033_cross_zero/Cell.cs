@@ -6,7 +6,15 @@ using System.Threading.Tasks;
 
 namespace app033_cross_zero
 {
-	class Cell
-	{
-	}
+    class Cell
+    {
+        private static string _name;
+        private static bool _isEmpty;
+        private static string _value;
+
+        public Cell()       {        }
+
+
+
+    }
 }

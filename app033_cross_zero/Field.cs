@@ -6,18 +6,8 @@ using System.Threading.Tasks;
 
 namespace app033_cross_zero
 {
-    class Game
+    class Field
     {
-        private static int _curr
 
-
-
-
-
-        public string _step(string coords)
-        {
-
-            return "";
-        }
     }
 }
