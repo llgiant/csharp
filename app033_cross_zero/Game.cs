@@ -19,12 +19,10 @@ class Game
 	#endregion;
 
 	#region " Конструкторы "
-	public Game() : this(new Player(), new Player())
-	{
-		for (int index = 1; index < 10; index++) { cells[index] = new Cell(index); }
-	}
+
 	public Game(Player player1, Player player2)
 	{
+		for (int index = 1; index < 10; index++) { cells[index] = new Cell(index); }
 		Fishka1 = player1.Fishka;
 		Fishka2 = player2.Fishka;
 		Name1 = player1.Name;

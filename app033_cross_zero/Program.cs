@@ -13,7 +13,6 @@ class Program
 		Console.WriteLine("========================================================================");
 		Console.WriteLine();
 		appBegin:
-		Game game = new Game();
 		#region Выбор игры
 		bool isRobot = false;          //Определяет игру с компьютером(true) или человеком(false)
 		string strName1 = "";          //имя первого игрока
@@ -55,13 +54,13 @@ class Program
 		Player player1 = new Player(strName1, isRobot, strFishka1);
 		Player player2 = new Player(strName2, isRobot, strFishka2);
 
-		 game = new Game(player1, player2);
+		Game game = new Game(player1, player2);
 
 
 		do
 		{
 			Console.Write(game.Draw());
-			Console.WriteLine($"Ход {(game.CurrentPlayer < 2 ? "первого" : "второго")} игрока. Веведите координаты ячейки:");
+			Console.WriteLine($"Ходит {(game.CurrentPlayer < 2 ? player1.Name : player2.Name)}. Веведите координаты ячейки:");
 			inputStep: string strError = game._step(Console.ReadLine());
 			if (strError.Length > 0)
 			{
