@@ -52,6 +52,7 @@ class Program
 		else if (strFishka1 == "х") { strFishka2 = "o"; }
 		#endregion
 		Player player1 = new Player(strName1, isRobot, strFishka1);
+
 		Player player2 = new Player(strName2, isRobot, strFishka2);
 
 		Game game = new Game(player1, player2);
