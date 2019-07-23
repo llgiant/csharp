@@ -13,20 +13,31 @@ class Program
 		Console.WriteLine("========================================================================");
 		Console.WriteLine();
 		appBegin:
-
+		Game game = new Game();
 		#region Выбор игры
-		bool isRobot;
+		bool isRobot = false;          //Определяет игру с компьютером(true) или человеком(false)
+		string strName1 = "";          //имя первого игрока
+		string strName2 = "Компьютер"; //имя второго игрока по умолчанию, 
+
 		Console.WriteLine($"Выбирите против кого вы будете играть:\n1-против человека\n2-против компьютера");
 		inputOpp: int opponentChoose = int.Parse(Console.ReadLine());
 		if (opponentChoose == 2) { isRobot = true; }
-		else if(opponentChoose == 1) { isRobot = false; }
+		else if (opponentChoose == 1) { isRobot = false; }
 		else { Console.WriteLine("Такой игры нет, повторите!"); goto inputOpp; }
 		#endregion
 
 		#region Ввод имен пользователей
 		Console.WriteLine($"Введите имя первого игрока:");
-		string name = Console.ReadLine();
-		if()
+		inputName1: strName1 = Console.ReadLine();
+		if (string.IsNullOrWhiteSpace(strName1)) { Console.WriteLine("Поле имя не может быть пустым, повторите ввод!"); goto inputName1; }
+		if (!isRobot)
+		{
+			Console.WriteLine($"Введите имя второго игрока:");
+			inputName2: strName2 = Console.ReadLine();
+			if (string.IsNullOrWhiteSpace(strName2)) { Console.WriteLine("Поле имя не может быть пустым, повторите ввод!"); goto inputName2; }
+
+		}
+
 		#endregion
 
 		#region Выбор первого игрока "х" или "о"
@@ -41,15 +52,11 @@ class Program
 		if (strFishka1 == "o") { strFishka2 = "x"; }
 		else if (strFishka1 == "х") { strFishka2 = "o"; }
 		#endregion
+		Player player1 = new Player(strName1, isRobot, strFishka1);
+		Player player2 = new Player(strName2, isRobot, strFishka2);
 
-		Game game = new Game();
+		 game = new Game(player1, player2);
 
-		 string checkFishka(String strName)
-		{
-			if (string.IsNullOrWhiteSpace(strName)) { return "Поле имя не может быть пустым"; }
-			if () { }
-			return "";
-		}
 
 		do
 		{

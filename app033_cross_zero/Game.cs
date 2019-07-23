@@ -13,24 +13,42 @@ class Game
 	private bool _isFinal = false;
 	private string _fpMark = " ";
 	private string _spMark = " ";
-	#endregion
+	private string _name1 = " ";
+	private string _name2 = " ";
+
+	#endregion;
 
 	#region " Конструкторы "
-	public Game()
+	public Game() : this(new Player(), new Player())
 	{
 		for (int index = 1; index < 10; index++) { cells[index] = new Cell(index); }
 	}
-
-
+	public Game(Player player1, Player player2)
+	{
+		Fishka1 = player1.Fishka;
+		Fishka2 = player2.Fishka;
+		Name1 = player1.Name;
+		Name2 = player2.Name;
+	}
 	#endregion
 
 	#region " Свойства "
-	public string FpMark
+	public string Name1
+	{
+		get { return _name1; }
+		set { _name1 = value; }
+	}
+	public string Name2
+	{
+		get { return _name2; }
+		set { _name2 = value; }
+	}
+	public string Fishka1
 	{
 		get { return _fpMark; }
 		set { _fpMark = value; }
 	}
-	public string SpMark
+	public string Fishka2
 	{
 		get { return _spMark; }
 		set { _spMark = value; }
@@ -72,7 +90,7 @@ class Game
 		int cellIndex = _getIndex(strCoords);
 		if (!cells[cellIndex].IsEmpty) { return $"Ячейка {strCoords} уже занята."; }
 
-		cells[cellIndex].Value = _currentPlayer == 1 ?  : SpMark;
+		cells[cellIndex].Value = _currentPlayer == 1 ? Fishka1 : Fishka2;
 
 		if (_checkFinal()) { _winner = _currentPlayer; _isFinal = true; }
 		else
