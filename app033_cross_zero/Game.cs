@@ -10,6 +10,9 @@ class Game
 	private int _currentPlayer = 0;
 	private int _winner = 0;
 	private Cell[] cells = new Cell[10];
+	private bool _isFinal = false;
+	private string _fpMark = " ";
+	private string _spMark = " ";
 	#endregion
 
 	#region " Конструкторы "
@@ -17,9 +20,21 @@ class Game
 	{
 		for (int index = 1; index < 10; index++) { cells[index] = new Cell(index); }
 	}
+
+
 	#endregion
 
 	#region " Свойства "
+	public string FpMark
+	{
+		get { return _fpMark; }
+		set { _fpMark = value; }
+	}
+	public string SpMark
+	{
+		get { return _spMark; }
+		set { _spMark = value; }
+	}
 	public int CurrentPlayer { get { return _currentPlayer; } }
 
 	public int Winner { get { return _winner; } }
@@ -34,24 +49,39 @@ class Game
 		}
 	}
 
-	public bool IsFinal { get { return _winner != 0; } }
+	public bool IsFinal { get { return _isFinal; } }
 	#endregion
 
 	#region " Функции "
+
+
 	public string _step(string coords)
 	{
 		if (CurrentPlayer == 0) { _currentPlayer = 1; }
-		if (string.IsNullOrEmpty(coords)) { return "Ошибка"; }
-		string strData = coords.Trim().ToLower();
-		if (strData.Length != 2) { return "Ошибка длины координат"; }
-		string Row = strData.Substring(0, 1);
-		if (!"abc".Contains(Row)) { return "Ошибка"; }
-		string Col = strData.Substring(1);
-		if (!"123".Contains(Col)) { return "Ошибка"; }
-		int cellIndex = _getIndex(strData);
-		if (!cells[cellIndex].IsEmpty) { return "Ошибка"; }
-		cells[cellIndex].Value = _currentPlayer == 1 ? "o" : "x";
+		if (string.IsNullOrEmpty(coords)) { return "Вы не ввели координаты"; }
 
+		string strCoords = coords.Trim().ToLower();
+		if (strCoords.Length != 2) { return "Координаты должны содержать одну букву и одну цифру"; }
+
+		string Row = strCoords.Substring(0, 1);
+		if (!"abc".Contains(Row)) { return "Таких координат не существует"; }
+
+		string Col = strCoords.Substring(1);
+		if (!"123".Contains(Col)) { return "Таких координат не существует"; }
+
+		int cellIndex = _getIndex(strCoords);
+		if (!cells[cellIndex].IsEmpty) { return $"Ячейка {strCoords} уже занята."; }
+
+		cells[cellIndex].Value = _currentPlayer == 1 ?  : SpMark;
+
+		if (_checkFinal()) { _winner = _currentPlayer; _isFinal = true; }
+		else
+		{
+			if (_allEmpty()) { _isFinal = true; }
+			else { _currentPlayer = _currentPlayer == 1 ? _currentPlayer = 2 : _currentPlayer = 1; }
+		}
+
+		return "";
 	}
 
 	private int _getIndex(String coords)
@@ -71,20 +101,22 @@ class Game
 		}
 	}
 
+	private bool _allEmpty()
+	{
+		for (int index = 1; index < cells.Length; index++) { if (cells[index].IsEmpty) { return false; } }
+		return true;
+	}
+
 	private bool _checkFinal()
 	{
-		if (
-
-			(cells[1].Value == cells[2].Value && cells[1].Value == cells[3].Value && !string.IsNullOrWhiteSpace(cells[1].Value)) ||
-			(cells[4].Value == cells[5].Value && cells[4].Value == cells[6].Value && !string.IsNullOrWhiteSpace(cells[4].Value)) ||
-			(cells[7].Value == cells[8].Value && cells[7].Value == cells[9].Value && !string.IsNullOrWhiteSpace(cells[7].Value)) ||
-			(cells[1].Value == cells[4].Value && cells[1].Value == cells[7].Value && !string.IsNullOrWhiteSpace(cells[1].Value)) ||
-			(cells[2].Value == cells[5].Value && cells[2].Value == cells[8].Value && !string.IsNullOrWhiteSpace(cells[2].Value)) ||
-			(cells[3].Value == cells[6].Value && cells[3].Value == cells[9].Value && !string.IsNullOrWhiteSpace(cells[3].Value)) ||
-			(cells[1].Value == cells[5].Value && cells[1].Value == cells[9].Value && !string.IsNullOrWhiteSpace(cells[1].Value)) ||
-			(cells[3].Value == cells[5].Value && cells[3].Value == cells[7].Value && !string.IsNullOrWhiteSpace(cells[3].Value))
-
-			) { return true; }
+		return (cells[1].Value == cells[2].Value && cells[1].Value == cells[3].Value && !cells[1].IsEmpty) ||
+			   (cells[4].Value == cells[5].Value && cells[4].Value == cells[6].Value && !cells[4].IsEmpty) ||
+			   (cells[7].Value == cells[8].Value && cells[7].Value == cells[9].Value && !cells[7].IsEmpty) ||
+			   (cells[1].Value == cells[4].Value && cells[1].Value == cells[7].Value && !cells[1].IsEmpty) ||
+			   (cells[2].Value == cells[5].Value && cells[2].Value == cells[8].Value && !cells[2].IsEmpty) ||
+			   (cells[3].Value == cells[6].Value && cells[3].Value == cells[9].Value && !cells[3].IsEmpty) ||
+			   (cells[1].Value == cells[5].Value && cells[1].Value == cells[9].Value && !cells[1].IsEmpty) ||
+			   (cells[3].Value == cells[5].Value && cells[3].Value == cells[7].Value && !cells[3].IsEmpty);
 	}
 	#endregion
 
