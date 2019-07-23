@@ -61,7 +61,7 @@ class Program
 		do
 		{
 			Console.Write(game.Draw());
-			Console.WriteLine($"Ходит {(game.CurrentPlayer < 2 ? player1.Name : player2.Name)}. Веведите координаты ячейки:");
+			Console.WriteLine($"Ходит {(game.CurrentPlayer < 2 ? strName1 : strName2)}. Веведите координаты ячейки:");
 			inputStep: string strError = game._step(Console.ReadLine());
 			if (strError.Length > 0)
 			{
