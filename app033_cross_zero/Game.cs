@@ -7,15 +7,12 @@ using System.Threading.Tasks;
 class Game
 {
 	#region " Локальные переменные "
-	private int _currentPlayer = 0;
-	private int _winner = 0;
+	private Player _currentPlayer = null;
+	private Player _winner = null;
 	private Cell[] cells = new Cell[10];
 	private bool _isFinal = false;
-	private string _fpMark = " ";
-	private string _spMark = " ";
-	private string _name1 = " ";
-	private string _name2 = " ";
-
+	private Player _player1 = null;
+	private Player _player2 = null;
 	#endregion;
 
 	#region " Конструкторы "
@@ -23,45 +20,26 @@ class Game
 	public Game(Player player1, Player player2)
 	{
 		for (int index = 1; index < 10; index++) { cells[index] = new Cell(index); }
-		Fishka1 = player1.Fishka;
-		Fishka2 = player2.Fishka;
-		Name1 = player1.Name;
-		Name2 = player2.Name;
+		_player1 = player1;
+		_player2 = player2;
+		_currentPlayer = _player1;
 	}
 	#endregion
 
 	#region " Свойства "
-	public string Name1
-	{
-		get { return _name1; }
-		set { _name1 = value; }
-	}
-	public string Name2
-	{
-		get { return _name2; }
-		set { _name2 = value; }
-	}
-	public string Fishka1
-	{
-		get { return _fpMark; }
-		set { _fpMark = value; }
-	}
-	public string Fishka2
-	{
-		get { return _spMark; }
-		set { _spMark = value; }
-	}
-	public int CurrentPlayer { get { return _currentPlayer; } }
+	public Player Player1 { get { return _player1; } }
+	public Player Player2 { get { return _player2; } }
+	public Player CurrentPlayer { get { return _currentPlayer; } }
 
-	public int Winner { get { return _winner; } }
+	public Player Winner { get { return _winner; } }
 
-	public int Loser
+	public Player Loser
 	{
 		get
 		{
-			if (_winner == 1) { return 2; }
-			else if (_winner == 2) { return 1; }
-			return 0;
+			if (_winner == Player1) { return Player2; }
+			else if (_winner == Player2) { return Player1; }
+			return null;
 		}
 	}
 
@@ -70,8 +48,7 @@ class Game
 
 	#region " Функции "
 	public string _step(string coords)
-	{
-		if (CurrentPlayer == 0) { _currentPlayer = 1; }
+	{		
 		if (string.IsNullOrEmpty(coords)) { return "Вы не ввели координаты"; }
 
 		string strCoords = coords.Trim().ToLower();
@@ -86,13 +63,13 @@ class Game
 		int cellIndex = _getIndex(strCoords);
 		if (!cells[cellIndex].IsEmpty) { return $"Ячейка {strCoords} уже занята."; }
 
-		cells[cellIndex].Value = _currentPlayer == 1 ? Fishka1 : Fishka2;
+		cells[cellIndex].Value = _currentPlayer == Player1 ? Player1.Fishka : Player2.Fishka;
 
 		if (_checkFinal()) { _winner = _currentPlayer; _isFinal = true; }
 		else
 		{
 			if (_allEmpty()) { _isFinal = true; }
-			else { _currentPlayer = _currentPlayer == 1 ? _currentPlayer = 2 : _currentPlayer = 1; }
+			else { _currentPlayer = _currentPlayer == Player1 ? _currentPlayer = Player2 : _currentPlayer = Player1; }
 		}
 
 		return "";
