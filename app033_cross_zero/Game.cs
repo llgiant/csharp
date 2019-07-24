@@ -69,8 +69,6 @@ class Game
 	#endregion
 
 	#region " Функции "
-
-
 	public string _step(string coords)
 	{
 		if (CurrentPlayer == 0) { _currentPlayer = 1; }
