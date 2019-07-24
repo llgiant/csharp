@@ -64,7 +64,7 @@ class Program
 		} while (wordsCount < 21);
 
 
-		Console.WriteLine($"\n20 случайных слов:\n{rndNum}");
+		Console.WriteLine($"\n20 случайных слов:\n{listWords}");
 
 
 
