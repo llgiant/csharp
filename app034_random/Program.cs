@@ -20,7 +20,7 @@ class Program
 
 		Console.WriteLine("Введите первое целое число \"а\" от 60 до 100");
 		inputB: int b = int.Parse(Console.ReadLine());
-		if (b < 60 || b > 100) { Console.WriteLine("Число \"а\" должно быть в диапахзоне от 60 до 100"); goto inputB; }
+		if (b < 60 || b > 100) { Console.WriteLine("Число \"а\" должно быть в диапазоне от 60 до 100"); goto inputB; }
 
 		Random rnd = new Random();
 
@@ -62,7 +62,6 @@ class Program
 			word = "";
 			wordsCount++;
 		} while (wordsCount < 21);
-
 
 		Console.WriteLine($"\n20 случайных слов:\n{listWords}");
 
