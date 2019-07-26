@@ -44,7 +44,7 @@ class Program
         do
         {
         inputCat: if (countCat1 < 3 || countCat2 < 2) { cat = rnd.Next(1, 3); }
-            cat = rnd.Next(1, 5);
+            else { cat = rnd.Next(1, 5); }
             switch (cat)
             {
                 case 1:
