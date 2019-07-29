@@ -47,27 +47,23 @@ class Program
 
 		do
 		{
-			newCat: cat = rnd.Next(1, 3);
+			newCat: cat = rnd.Next(1, catArray.Length);
 			if (cat == prevCat) { goto newCat; }
 
 			if (strPass.Length < 7)
 			{
-				if(countCat1 == 0) { }
-												
+				if (cat == 1 && countCat1 == 0) { goto newCat; }
+				if (cat == 2 && countCat2 == 0) { goto newCat; }
+				if (cat == 3 && countCat3 == 0) { goto newCat; }
+				if (cat == 4 && countCat4 == 0) { goto newCat; }
 			}
-			else { cat = rnd.Next(1, catArray.Length); }
-
 			strCat = catArray[cat];
 			symbol = strCat[rnd.Next(1, catArray.Length + 1)];
 
-			if (cat == 1 && cat != prevCat)
-			{
-				
-				countCat1--;
-			}
-			else if (cat == 2 && cat != prevCat) { countCat2--; }
-			else if (cat == 3 && cat != prevCat) { countCat3--; }
-			else if (cat == 4 && cat != prevCat) { countCat4--; }
+			if (cat == 1) { countCat1--; }
+			else if (cat == 2) { countCat2--; }
+			else if (cat == 3) { countCat3--; }
+			else if (cat == 4) { countCat4--; }
 			strPass += symbol;
 			catArray[cat] = catArray[cat].Replace(symbol + "", string.Empty);
 			prevCat = cat;
