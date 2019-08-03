@@ -14,23 +14,30 @@ class Program
 		Console.WriteLine();
 		appBegin:
 
-		bool isRobot = false;          //Определяет игру с компьютером(true) или человеком(false)
 		string strName1 = "";          //имя первого игрока
 		string strName2 = "Компьютер"; //имя второго игрока по умолчанию
+		int gameMode = 0;
 
 		#region Выбор игры
-		Console.WriteLine($"Выбирите против кого вы будете играть:\n1-против человека\n2-против компьютера");
-		inputOpp: int opponentChoose = int.Parse(Console.ReadLine());
-		if (opponentChoose == 1) { isRobot = false; }
-		else if (opponentChoose == 2) { isRobot = true; }
-		else { Console.WriteLine("Такой игры нет, повторите!"); goto inputOpp; }
+		Console.WriteLine($"Выбирите против кого вы будете играть:\n0-против человека\n1-против компьютера");
+		inputOpp: int playerType = int.Parse(Console.ReadLine());
+		if (playerType < 0 || playerType > 1) { Console.WriteLine("Такой игры нет, повторите!"); goto inputOpp; }
+		#endregion
+
+		#region Выбор сложности игры		
+		if (playerType == 1)
+		{
+			Console.WriteLine($"Выбирите сложность игры:\n0-Легко\n1-Тяжело");
+			inputLevel: gameMode = int.Parse(Console.ReadLine());
+			if (gameMode < 0 || gameMode > 1) { Console.WriteLine("Такой сложности игры нет, повторите!"); goto inputLevel; }
+		}
 		#endregion
 
 		#region Ввод имен пользователей
 		Console.WriteLine($"Введите имя первого игрока:");
 		inputName1: strName1 = Console.ReadLine();
 		if (string.IsNullOrWhiteSpace(strName1)) { Console.WriteLine("Поле имя не может быть пустым, повторите ввод!"); goto inputName1; }
-		if (!isRobot)
+		if (playerType == 0)
 		{
 			Console.WriteLine($"Введите имя второго игрока:");
 			inputName2: strName2 = Console.ReadLine();
@@ -50,24 +57,35 @@ class Program
 		if (strFishka1 == "o") { strFishka2 = "x"; }
 		else if (strFishka1 == "х") { strFishka2 = "o"; }
 		#endregion
-		Player player1 = new Player(strName1, isRobot, strFishka1);
-		Player player2 = new Player(strName2, isRobot, strFishka2);
-		Game game = new Game(player1, player2);
 
-
+		string stepCoords = "";
+		Player player1 = new Player(strName1, PlayerType.Human, strFishka1);
+		Player player2 = new Player(strName2, (PlayerType)playerType, strFishka2);
+		Game game = new Game(player1, player2, (GameMode)gameMode);
+		string strError = "";
 		do
 		{
 			Console.Write(game.Draw());
-			Console.WriteLine($"Ходит {game.CurrentPlayer.Name}. Веведите координаты ячейки:");
+			Console.Write($"Ходит {game.CurrentPlayer.Name}.");
+			inputStep:
+			if (game.CurrentPlayer.Type != PlayerType.Robot)
+			{
+				Console.WriteLine($"Веведите координаты ячейки:");
+				stepCoords = Console.ReadLine();
+			}
+			else
+			{
+				Console.WriteLine();
+				stepCoords = "";
+			}
 
-			//if(!isRobot){
-			inputStep: string strError = game._step(Console.ReadLine());
+			strError = game._step(stepCoords);
 			if (strError.Length > 0)
 			{
 				Console.WriteLine(strError + ".\nПовторите:");
 				goto inputStep;
 			}
-			//} else {Ход компьютера}
+
 		} while (!game.IsFinal);
 		Console.Write(game.Draw());
 

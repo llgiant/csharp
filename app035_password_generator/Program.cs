@@ -22,51 +22,61 @@ class Program
 		//6. Рядом не могут сторять два символа одной категории
 		//7. Символы одной категории не могут повторяться
 
-		int passLen = 0;     // Длина пароля
+		Console.WriteLine("Введите длину пароля от 9 до 18 символов:");
+		inputLen: int passLen = int.Parse(Console.ReadLine());  // Запрос длины пароля
+		if (passLen < 9 || passLen > 18)
+		{
+			Console.WriteLine("Длина пароля должна быть от 9 до 18 символов, повторите:"); goto inputLen;
+		}
+		again:
+		string[] catArray = new string[]
+		{
+			"",
+			"abcdefghijklmnopqrstuvwxyz",
+			"ABCDEFGHIJKLMNOPQRSTUVWXYZ", //Массив категорий
+			 "1234567890",
+			"!@#$%^&*()[]{}?"
+		};
 		char symbol = ' ';   // Символ в определенной категории
 		string strPass = ""; // Сгенерированный пароль		
 		int countCat1 = 3;   // Счетчик первой категории
 		int countCat2 = 2;   // Счетчик второй категории
 		int countCat3 = 1;   // Счетчик третьей категории
 		int countCat4 = 1;   // Счетчик четвертой категории					
-		int prevCat = 0;     // Предыдущая Категория 
+		int prevCat1 = 0;     // Предыдущая Категория 
+		int prevCat2 = 0;     // Предпредыдущая Категория 
+
 		int cat = 0;         // Категория от 1 до 4
 		string strCat = "";  // Символы категории
-
-
-		string[] catArray = new string[]{"", "abcdefghijklmnopqrstuvwxyz", "ABCDEFGHIJKLMNOPQRSTUVWXYZ", //Массив категории
-			 "1234567890", "!@#$%^&*()[]{}?" };
-
-
-		Console.WriteLine("Введите длину пароля от 9 до 18 символов:");
-		inputLen: passLen = int.Parse(Console.ReadLine());
-		if (passLen < 9 || passLen > 18)
-		{
-			Console.WriteLine("Длина пароля должна быть от 9 до 18 символов, повторите:"); goto inputLen;
-		}
-
 		do
 		{
 			newCat: cat = rnd.Next(1, catArray.Length);
-			if (cat == prevCat) { goto newCat; }
+			if (cat == prevCat1) { goto newCat; }
 
 			if (strPass.Length < 7)
 			{
-				if (cat == 1 && countCat1 == 0) { goto newCat; }
-				if (cat == 2 && countCat2 == 0) { goto newCat; }
-				if (cat == 3 && countCat3 == 0) { goto newCat; }
-				if (cat == 4 && countCat4 == 0) { goto newCat; }
+				if (prevCat1 == cat || prevCat2 == cat) { goto again; }
+				if
+				(
+					(cat == 1 && countCat1 == 0) ||
+					(cat == 2 && countCat2 == 0) ||
+					(cat == 3 && countCat3 == 0) ||
+					(cat == 4 && countCat4 == 0)
+				)
+				{ goto newCat; }
+
+				if (cat == 1) { countCat1--; }
+				else if (cat == 2) { countCat2--; }
+				else if (cat == 3) { countCat3--; }
+				else if (cat == 4) { countCat4--; }
 			}
 			strCat = catArray[cat];
 			symbol = strCat[rnd.Next(1, catArray.Length + 1)];
 
-			if (cat == 1) { countCat1--; }
-			else if (cat == 2) { countCat2--; }
-			else if (cat == 3) { countCat3--; }
-			else if (cat == 4) { countCat4--; }
 			strPass += symbol;
 			catArray[cat] = catArray[cat].Replace(symbol + "", string.Empty);
-			prevCat = cat;
+			prevCat2 = prevCat1;
+			prevCat1 = cat;
 		}
 		while (strPass.Length < passLen);
 

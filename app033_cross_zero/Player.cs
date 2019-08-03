@@ -3,29 +3,38 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+public enum PlayerType
+{
+	Human = 0,
+	Robot = 1
+}
 class Player
 {
 	#region " Локальные переменные "
 	private string _name = " ";
-	private bool _isRobot = false;
+	private PlayerType _playerType = PlayerType.Human;
 	private string _fishka = "0";
 	#endregion
 
 	#region " Конструкторы "
 	public Player() : this("") { }
-	public Player(String name) : this(name, false) { }
-	public Player(String name, bool isRobot) : this(name, isRobot, "o") { }
+	public Player(String name) : this(name, PlayerType.Human) { }
+	public Player(String name, PlayerType PlayerType) : this(name, PlayerType.Human, "o") { }
 
-	public Player(String name, bool isRobot, string fishka)
+	public Player(String name, PlayerType playerType, string fishka)
 	{
 		_name = name;
-		_isRobot = isRobot;
+		Type = playerType;
 		Fishka = fishka;
 	}
 	#endregion
 
 	#region " Свойства "
+	public PlayerType Type
+	{
+		get {return _playerType; }
+		set { _playerType = value; }
+	}
 	public string Name
 	{
 		get { return _name; }
@@ -39,10 +48,7 @@ class Player
 			_fishka = value;
 		}
 	}
-	public bool IsRobot
-	{
-		get { return _isRobot; }
-	}
+	
 	#endregion
 
 	#region " Функции "
