@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 public enum PlayerType
 {
 	Human = 0,
-	Robot = 1
+	Robot1 = 1,
+	Robot2 = 2
 }
 class Player
 {
@@ -32,7 +33,7 @@ class Player
 	#region " Свойства "
 	public PlayerType Type
 	{
-		get {return _playerType; }
+		get { return _playerType; }
 		set { _playerType = value; }
 	}
 	public string Name
@@ -48,7 +49,7 @@ class Player
 			_fishka = value;
 		}
 	}
-	
+
 	#endregion
 
 	#region " Функции "

@@ -14,18 +14,21 @@ class Program
 		Console.WriteLine();
 		appBegin:
 
-		string strName1 = "";          //имя первого игрока
-		string strName2 = "Компьютер"; //имя второго игрока по умолчанию
-		int gameMode = 0;
+		string strName1 = "Робот#1";         //имя первого игрока по умолчанию
+		string strName2 = "Робот#2";         //имя второго игрока по умолчанию
+		int gameMode = 0;                    // Вид игры, 0 - легкая(по умолчанию), 1 - сложная
+		int playerTwoType = 0;               //Тип игрока1, 0 - Human(по умолчанию), 1 - робот1, 2 - робот2
+		int playerOneType = 0;               //Тип игрока2, Hunan(по умолчанию), 1 - робот1, 2 - робот2
 
 		#region Выбор игры
-		Console.WriteLine($"Выбирите против кого вы будете играть:\n0-против человека\n1-против компьютера");
-		inputOpp: int playerType = int.Parse(Console.ReadLine());
-		if (playerType < 0 || playerType > 1) { Console.WriteLine("Такой игры нет, повторите!"); goto inputOpp; }
+		Console.WriteLine($"Выбирите против кого вы будете играть:\n0-человек против человека\n1-человек против робота\n2-робот#1 против робот#2");
+		inputOpp: playerTwoType = int.Parse(Console.ReadLine());
+		if (playerTwoType < 0 || playerTwoType > 2) { Console.WriteLine("Такой игры нет, повторите!"); goto inputOpp; }
+		if (playerTwoType == 2) { playerOneType = playerTwoType; }
 		#endregion
 
 		#region Выбор сложности игры		
-		if (playerType == 1)
+		if (playerTwoType > 0)
 		{
 			Console.WriteLine($"Выбирите сложность игры:\n0-Легко\n1-Тяжело");
 			inputLevel: gameMode = int.Parse(Console.ReadLine());
@@ -34,16 +37,19 @@ class Program
 		#endregion
 
 		#region Ввод имен пользователей
-		Console.WriteLine($"Введите имя первого игрока:");
-		inputName1: strName1 = Console.ReadLine();
-		if (string.IsNullOrWhiteSpace(strName1)) { Console.WriteLine("Поле имя не может быть пустым, повторите ввод!"); goto inputName1; }
-		if (playerType == 0)
+		if (playerTwoType == 0)
 		{
-			Console.WriteLine($"Введите имя второго игрока:");
-			inputName2: strName2 = Console.ReadLine();
-			if (string.IsNullOrWhiteSpace(strName2)) { Console.WriteLine("Поле имя не может быть пустым, повторите ввод!"); goto inputName2; }
+			Console.WriteLine($"Введите имя первого игрока:");
+			inputName1: strName1 = Console.ReadLine();
+			if (string.IsNullOrWhiteSpace(strName1)) { Console.WriteLine("Поле имя не может быть пустым, повторите ввод!"); goto inputName1; }
+
+			{
+				Console.WriteLine($"Введите имя второго игрока:");
+				inputName2: strName2 = Console.ReadLine();
+				if (string.IsNullOrWhiteSpace(strName2)) { Console.WriteLine("Поле имя не может быть пустым, повторите ввод!"); goto inputName2; }
+			}
+			#endregion
 		}
-		#endregion
 
 		#region Выбор первого игрока "х" или "о"
 		Console.WriteLine("Выбирите чем будет ходить {0}: \"x\" или \"o\"", strName1);
@@ -58,17 +64,22 @@ class Program
 		else if (strFishka1 == "х") { strFishka2 = "o"; }
 		#endregion
 
-		string stepCoords = "";
-		Player player1 = new Player(strName1, PlayerType.Human, strFishka1);
-		Player player2 = new Player(strName2, (PlayerType)playerType, strFishka2);
+
+
+		Player player1 = new Player(strName1, (PlayerType)playerOneType, strFishka1);
+		Player player2 = new Player(strName2, (PlayerType)playerTwoType, strFishka2);
 		Game game = new Game(player1, player2, (GameMode)gameMode);
-		string strError = "";
+
+		string stepCoords = ""; //координаты введенные человеком
+		string strError = "";   //сообщение об ошибке введенных не корректно координат
+
+		//Действие игры, ходы игроков
 		do
 		{
 			Console.Write(game.Draw());
 			Console.Write($"Ходит {game.CurrentPlayer.Name}.");
 			inputStep:
-			if (game.CurrentPlayer.Type != PlayerType.Robot)
+			if (game.CurrentPlayer.Type != PlayerType.Robot1 && game.CurrentPlayer.Type != PlayerType.Robot2)
 			{
 				Console.WriteLine($"Веведите координаты ячейки:");
 				stepCoords = Console.ReadLine();
@@ -77,9 +88,11 @@ class Program
 			{
 				Console.WriteLine();
 				stepCoords = "";
+				Console.ReadKey();
 			}
 
 			strError = game._step(stepCoords);
+			// проверка введенных координат
 			if (strError.Length > 0)
 			{
 				Console.WriteLine(strError + ".\nПовторите:");

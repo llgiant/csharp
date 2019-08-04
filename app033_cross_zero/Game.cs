@@ -68,7 +68,7 @@ class Game
 	public string _step(string coords)
 	{
 		int cellIndex = 0;
-		if (_currentPlayer.Type != PlayerType.Robot)
+		if (_currentPlayer.Type != PlayerType.Robot1 && _currentPlayer.Type != PlayerType.Robot2)
 		{
 			if (string.IsNullOrEmpty(coords)) { return "Вы не ввели координаты"; }
 
