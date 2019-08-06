@@ -10,6 +10,8 @@ class Cell
 	#region " Конструкторы "
 	public Cell(int index)
 	{
+
+
 		switch (index)
 		{
 			case 1: _name = "a1"; break;
@@ -23,6 +25,7 @@ class Cell
 			case 7: _name = "c1"; break;
 			case 8: _name = "c2"; break;
 			case 9: _name = "c3"; break;
+			default: throw new ArgumentException("Индекс ячейки должен принимать значения от 1 до 9.");
 		}
 	}
 	#endregion

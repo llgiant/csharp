@@ -13,6 +13,7 @@ class Size
 	#endregion
 
 	#region Конструктор
+	public Size() { }
 	public Size(double width, double height) { Width = width; Height = height; }
 	#endregion
 
@@ -20,13 +21,21 @@ class Size
 	public double Width
 	{
 		get { return _width; }
-		set { if (_width > 0) { _width = value; } }
+		set
+		{
+			if (value <= 0) { throw new ArgumentException("Значение ширины не должно быть отрицательным числом."); }
+			_width = value;
+		}
 	}
 
 	public double Height
 	{
 		get { return _height; }
-		set { if (_height > 0) { _height = value; } }
+		set
+		{
+			if (value <= 0) { throw new ArgumentException("Значение высоты не должно быть отрицательным числом."); }
+			_height = value;
+		}
 	}
 	#endregion
 }

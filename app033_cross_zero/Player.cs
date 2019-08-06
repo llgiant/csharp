@@ -34,11 +34,21 @@ class Player
 	public PlayerType Type
 	{
 		get { return _playerType; }
-		set { _playerType = value; }
+		set
+		{
+			if (value > (PlayerType)2 || value < 0) { throw new Exception("В игре всего 3 типа игрока"); }
+			_playerType = value;
+		}
 	}
 	public string Name
 	{
+
 		get { return _name; }
+		set
+		{
+			if (string.IsNullOrWhiteSpace(value)) { throw new Exception("Имя не может быть пустым"); }
+			_name = value;
+		}
 	}
 	public string Fishka
 	{
@@ -52,15 +62,4 @@ class Player
 
 	#endregion
 
-	#region " Функции "
-	public string _chekName(String n)
-	{
-		if (string.IsNullOrWhiteSpace(n))
-		{
-			return " ";
-		}
-
-		return "";
-	}
-	#endregion
 }

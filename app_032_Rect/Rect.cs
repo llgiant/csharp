@@ -42,12 +42,20 @@ class Rect
 	public Size Size
 	{
 		get { return _size; }
-		set { if (value != null) { _size = value; } }
+		set
+		{
+			if (value == null) { throw new ArgumentNullException("value"); }
+			_size = value;
+		}
 	}
 	public Point Point
 	{
 		get { return _point; }
-		set { if (value != null) { _point = value; } }
+		set
+		{
+			if (value == null) { throw new ArgumentNullException("value"); }
+			_point = value;
+		}
 	}
 	public bool IsSquare { get { return _size.Width == _size.Height; } }
 	public double Diagonal { get { return Math.Sqrt(_size.Height * _size.Height + _size.Width * _size.Width); } }
@@ -82,17 +90,15 @@ class Rect
 	public Rect MoveY(double deltaY) { return Move(0, deltaY); }
 	public Rect Move(double deltaX, double deltaY) { return new Rect(_size.Width, _size.Height, _point.X + deltaX, _point.Y + deltaY); }
 	public Rect Relocation(double x, double y) { return new Rect(Width, Height, x, y); }
-	public Rect Relocation(Point point) { return new Rect(_point.X, _point.Y); }
-	public Rect Scale(double factor)
+	public Rect Relocation(Point point)
 	{
-		Rect newRect = new Rect();
-		Size newSize = new Size(_size.Width * factor, _size.Height * factor);
-		newRect._size = newSize;
-		newRect._point = new Point(_point.X + (newSize.Width - _size.Width) / 2, _point.Y + (newSize.Height - _size.Height) / 2);
-		return newRect;
+		if (point == null) { throw new ArgumentNullException("point"); }
+		return new Rect(_size, point);
 	}
+	public Rect Scale(double factor) { return Scale(factor, (Right - X) / 2, (Bottom - Y) / 2); }
 	public Rect Scale(double factor, double x, double y)
 	{
+		if (factor <= 0) { throw new ArgumentException("Коэффициент масштабирования не может быть нулевым или отрицательным."); }
 		Rect newRect = new Rect();
 		newRect.Size.Width = Size.Width * factor;
 		newRect.Size.Height = newRect.Size.Height * factor;
@@ -102,10 +108,19 @@ class Rect
 	}
 	public bool ContainsPoint(double x, double y) { return ContainsPoint(new Point(x, y)); }
 
-	public bool ContainsPoint(Point point) { return point.X > Left && point.X < Right && point.Y > Top && point.Y < Bottom; }
-	public bool ContainsRect(Rect rect) { return rect.Left > Left && rect.Right < Right && rect.Top > Top && rect.Bottom < Bottom; }
+	public bool ContainsPoint(Point point)
+	{
+		if (point == null) { throw new ArgumentNullException("point"); }
+		return point.X > Left && point.X < Right && point.Y > Top && point.Y < Bottom;
+	}
+	public bool ContainsRect(Rect rect)
+	{
+		if (rect == null) { throw new ArgumentNullException("rect"); }
+		return rect.Left > Left && rect.Right < Right && rect.Top > Top && rect.Bottom < Bottom;
+	}
 	public Rect Union(Rect rect)
 	{
+		if (rect == null) { throw new ArgumentNullException("rect"); }
 		double comLeft = rect.Left <= Left ? rect.Left : Left;
 		double comRight = rect.Right >= Right ? rect.Right : Right;
 		double comBottom = rect.Top <= Top ? rect.Top : Top;
@@ -115,6 +130,7 @@ class Rect
 	}
 	public bool IsIntersect(Rect rect)
 	{
+		if (rect == null) { throw new ArgumentNullException("rect"); }
 		return
 			ContainsPoint(rect.X, rect.Y) ||
 			ContainsPoint(rect.X + rect.Width, rect.Y) ||
@@ -124,6 +140,7 @@ class Rect
 
 	public Rect Intersected(Rect rect)
 	{
+		if (rect == null) { throw new ArgumentNullException("rect"); }
 		if (!IsIntersect(rect)) { return null; }
 		double comLeft = rect.Left <= Left ? rect.Left : Left;
 		double comRight = rect.Right >= Right ? rect.Right : Right;

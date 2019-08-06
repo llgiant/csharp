@@ -16,7 +16,7 @@ class Game
 	private Random rnd = new Random();
 	private Player _currentPlayer = null; // Поле устанавливает
 	private Player _winner = null;
-	private Cell[] cells = new Cell[10];
+	private Cell[] cells;
 	private bool _isFinal = false;
 	private Player _player1 = null;
 	private Player _player2 = null;
@@ -25,16 +25,23 @@ class Game
 
 	#region " Конструкторы "
 
-	public Game(Player player1, Player player2) : this(player1, player2, GameMode.Simple)
+	public Game(Player player1, Player player2) : this(player1, player2, GameMode.Simple,0)
 	{ }
 
-	public Game(Player player1, Player player2, GameMode gameMode)
+	public Game(Player player1, Player player2, GameMode gameMode, int fieldSize)
 	{
-		for (int index = 1; index < 10; index++) { cells[index] = new Cell(index); }
+		if(player1 == null) { throw new ArgumentNullException("player1"); }
+		if (player2 == null) { throw new ArgumentNullException("player2"); }
+		if(fieldSize < 3 || fieldSize > 10) { throw new ArgumentException("Размерность игрового поля должна быть в пределах от 3 до 10.")}
+
+		int arrayLen = fieldSize * fieldSize + 1;
+		cells = new Cell[arrayLen];
+		for (int index = 1; index < arrayLen; index++) { cells[index] = new Cell(index); }
 		_player1 = player1;
 		_player2 = player2;
 		_currentPlayer = _player1;
 		GameMode = gameMode;
+
 	}
 	#endregion
 
@@ -88,7 +95,7 @@ class Game
 		{
 			if (_gameMode == GameMode.Hard)
 			{
-				//СТРАТЕГИЯ НЗАЩИТЫ
+				#region СТРАТЕГИЯ ЗАЩИТЫ
 
 				//Ход в ячейку по горизонтали
 				if (cells[1].Value == Player1.Fishka && cells[2].Value == Player1.Fishka && cells[3].IsEmpty) { cellIndex = 3; }
@@ -122,8 +129,9 @@ class Game
 				else if (cells[1].Value == Player1.Fishka && cells[5].Value == Player1.Fishka && cells[9].IsEmpty) { cellIndex = 9; }
 				else if (cells[1].Value == Player1.Fishka && cells[9].Value == Player1.Fishka && cells[5].IsEmpty) { cellIndex = 5; }
 				else if (cells[5].Value == Player1.Fishka && cells[9].Value == Player1.Fishka && cells[1].IsEmpty) { cellIndex = 1; }
+				#endregion
 
-				//стратегия НАПАДЕНИЯ
+				#region СТРАТЕГИЯ НАПАДЕНИЯ
 
 				else if (cells[1].Value == Player2.Fishka && cells[2].Value == Player2.Fishka && cells[3].IsEmpty) { cellIndex = 3; }
 				else if (cells[1].Value == Player2.Fishka && cells[3].Value == Player2.Fishka && cells[2].IsEmpty) { cellIndex = 2; }
@@ -156,6 +164,7 @@ class Game
 				else if (cells[1].Value == Player2.Fishka && cells[5].Value == Player2.Fishka && cells[9].IsEmpty) { cellIndex = 9; }
 				else if (cells[1].Value == Player2.Fishka && cells[9].Value == Player2.Fishka && cells[5].IsEmpty) { cellIndex = 5; }
 				else if (cells[5].Value == Player2.Fishka && cells[9].Value == Player2.Fishka && cells[1].IsEmpty) { cellIndex = 1; }
+				#endregion
 			}
 		}
 

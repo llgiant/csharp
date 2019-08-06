@@ -12,23 +12,41 @@ class Program
 		Console.WriteLine("Игра \"Крестики-нолики\"");
 		Console.WriteLine("========================================================================");
 		Console.WriteLine();
+
+		Console.WriteLine($"Выбирите размерность поля от 3 до 10:");
+		inputCellMod:
+		
+
 		appBegin:
 
-		string strName1 = "Робот#1";         //имя первого игрока по умолчанию
-		string strName2 = "Робот#2";         //имя второго игрока по умолчанию
-		int gameMode = 0;                    // Вид игры, 0 - легкая(по умолчанию), 1 - сложная
-		int playerTwoType = 0;               //Тип игрока1, 0 - Human(по умолчанию), 1 - робот1, 2 - робот2
-		int playerOneType = 0;               //Тип игрока2, Hunan(по умолчанию), 1 - робот1, 2 - робот2
+		Player player1 = new Player();
+		Player player2 = new Player();
+
+		player1.Name = "Робот№1";         //имя первого игрока по умолчанию
+		player2.Name = "Робот№2";         //имя второго игрока по умолчанию
+		int gameMode = 0;                    // Вид игры, 0 - легкая(по умолчанию), 1 - сложная	
+		player1.Type = 0;
+		player2.Type = 0;
 
 		#region Выбор игры
-		Console.WriteLine($"Выбирите против кого вы будете играть:\n0-человек против человека\n1-человек против робота\n2-робот#1 против робот#2");
-		inputOpp: playerTwoType = int.Parse(Console.ReadLine());
-		if (playerTwoType < 0 || playerTwoType > 2) { Console.WriteLine("Такой игры нет, повторите!"); goto inputOpp; }
-		if (playerTwoType == 2) { playerOneType = playerTwoType; }
+		Console.WriteLine($"Выбирите против кого вы будете играть:\n0-человек против человека\n1-человек против робота\n2-робота№1 против робот№2");
+		inputOpp:
+		try
+		{
+			player2.Type = (PlayerType)int.Parse(Console.ReadLine());
+		}
+		catch(Exception e)
+		{
+			Console.WriteLine(e.Message);
+			Console.WriteLine("Повторите:");
+			goto inputOpp;
+		}
+
+		if (player2.Type ==(PlayerType) 2) { player1.Type = player2.Type; }
 		#endregion
 
 		#region Выбор сложности игры		
-		if (playerTwoType > 0)
+		if (player2.Type != PlayerType.Human)
 		{
 			Console.WriteLine($"Выбирите сложность игры:\n0-Легко\n1-Тяжело");
 			inputLevel: gameMode = int.Parse(Console.ReadLine());
@@ -37,40 +55,50 @@ class Program
 		#endregion
 
 		#region Ввод имен пользователей
-		if (playerTwoType == 0)
+		if (player1.Type == PlayerType.Human)
 		{
 			Console.WriteLine($"Введите имя первого игрока:");
-			inputName1: strName1 = Console.ReadLine();
-			if (string.IsNullOrWhiteSpace(strName1)) { Console.WriteLine("Поле имя не может быть пустым, повторите ввод!"); goto inputName1; }
-
+			inputName1:
+			try
 			{
-				Console.WriteLine($"Введите имя второго игрока:");
-				inputName2: strName2 = Console.ReadLine();
-				if (string.IsNullOrWhiteSpace(strName2)) { Console.WriteLine("Поле имя не может быть пустым, повторите ввод!"); goto inputName2; }
+				player1.Name = Console.ReadLine();
 			}
-			#endregion
+			catch(Exception e)
+			{
+				Console.WriteLine(e.Message);
+				Console.WriteLine("Повторите:");
+				goto inputName1;
+			}
 		}
-
+		if (player2.Type == PlayerType.Human) {
+			{
+				inputName2:
+				try
+				{
+					player2.Name = Console.ReadLine();
+				}
+				catch (Exception e)
+				{
+					Console.WriteLine(e.Message);
+					Console.WriteLine("Повторите:");
+					goto inputName2;
+				}
+			}
+		}
+		#endregion
 		#region Выбор первого игрока "х" или "о"
-		Console.WriteLine("Выбирите чем будет ходить {0}: \"x\" или \"o\"", strName1);
-		inputFishka: string strFishka1 = (Console.ReadLine());
-		string strFishka2 = " ";
-		if (!"xo".Contains(strFishka1))
-		{
-			Console.WriteLine($"Выбирете \"х\" либо \"o\"");
-			goto inputFishka;
-		}
-		if (strFishka1 == "o") { strFishka2 = "x"; }
-		else if (strFishka1 == "х") { strFishka2 = "o"; }
+		int fishka = rnd.Next(0, 2);
+		 player1.Fishka = fishka == 0 ? "o" : "x";
+		player2.Fishka = "x".Contains(player1.Fishka) ? "o" : "x";
+		Console.WriteLine($"{player1.Name} ходит {player1.Fishka}");
+		Console.WriteLine($"{player2.Name} ходит {player2.Fishka}");
 		#endregion
 
 
+		Game game = new Game(player1, player2, (GameMode)gameMode,5);
+		
 
-		Player player1 = new Player(strName1, (PlayerType)playerOneType, strFishka1);
-		Player player2 = new Player(strName2, (PlayerType)playerTwoType, strFishka2);
-		Game game = new Game(player1, player2, (GameMode)gameMode);
-
-		string stepCoords = ""; //координаты введенные человеком
+		string stepCoords = ""; //координаты введенные игроком
 		string strError = "";   //сообщение об ошибке введенных не корректно координат
 
 		//Действие игры, ходы игроков
@@ -92,6 +120,7 @@ class Program
 			}
 
 			strError = game._step(stepCoords);
+
 			// проверка введенных координат
 			if (strError.Length > 0)
 			{
