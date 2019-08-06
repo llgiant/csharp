@@ -5,28 +5,36 @@ class Cell
 	#region " Локальные переменные "
 	private string _name = "";
 	private string _value = " ";
+	string _strLetter = " abcdefghijklmnopqrstuvwxyz";
+
 	#endregion
 
 	#region " Конструкторы "
-	public Cell(int index)
+	public Cell(int index, int fieldSize)
 	{
+		//Передаается индекс например если поле 5 на 5 то передается индекс от 1 до 25
+		//и поле должно заполлняться по индексу 
+		//1 - а1, 2 - a2, 3 - a3, 4 - a4,  5 - a5 - 1-й ряд
+		//6 - b1, 7 - b2, 8 - b3, 9 - b4, 10 - b5 - 2-й ряд
+		//11 -c1, 12 - c2, 13 - c3, 14 - c4, 15 - c5 - 3й ряд
 
+		//получаем ряд
 
-		switch (index)
+		string row = "";
+		int column = 0;
+
+		if (index <= fieldSize) { row = index + ""; column = 1; }
+		else if (index > fieldSize)
 		{
-			case 1: _name = "a1"; break;
-			case 2: _name = "a2"; break;
-			case 3: _name = "a3"; break;
+			column = index % fieldSize > 0 ? index / fieldSize + 1 : index / fieldSize;
 
-			case 4: _name = "b1"; break;
-			case 5: _name = "b2"; break;
-			case 6: _name = "b3"; break;
-
-			case 7: _name = "c1"; break;
-			case 8: _name = "c2"; break;
-			case 9: _name = "c3"; break;
-			default: throw new ArgumentException("Индекс ячейки должен принимать значения от 1 до 9.");
+			row = index % fieldSize > 0 ? index % fieldSize + "" : fieldSize + "";
 		}
+		else
+		{
+			throw new ArgumentException("Индекс ячейки должен принимать значения от 1 до 9.");
+		}
+		_name = _strLetter[column] + row;
 	}
 	#endregion
 

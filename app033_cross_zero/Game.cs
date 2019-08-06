@@ -32,11 +32,11 @@ class Game
 	{
 		if(player1 == null) { throw new ArgumentNullException("player1"); }
 		if (player2 == null) { throw new ArgumentNullException("player2"); }
-		if(fieldSize < 3 || fieldSize > 10) { throw new ArgumentException("Размерность игрового поля должна быть в пределах от 3 до 10.")}
+		if(fieldSize < 3 || fieldSize > 10) { throw new ArgumentException("Размерность игрового поля должна быть в пределах от 3 до 10."); }
 
 		int arrayLen = fieldSize * fieldSize + 1;
 		cells = new Cell[arrayLen];
-		for (int index = 1; index < arrayLen; index++) { cells[index] = new Cell(index); }
+		for (int index = 1; index < arrayLen; index++) { cells[index] = new Cell(index, fieldSize); }
 		_player1 = player1;
 		_player2 = player2;
 		_currentPlayer = _player1;

@@ -95,7 +95,7 @@ class Program
 		#endregion
 
 
-		Game game = new Game(player1, player2, (GameMode)gameMode,5);
+		Game game = new Game(player1, player2, (GameMode)gameMode,10);
 		
 
 		string stepCoords = ""; //координаты введенные игроком
