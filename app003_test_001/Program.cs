@@ -4,11 +4,12 @@ class Program
 {
 	static void Main()
 	{
+
 		Console.WriteLine("========================================================================");
 		Console.WriteLine("Что будет делать программа?");
 		Console.WriteLine("========================================================================");
 		Console.WriteLine();
-		Console.WriteLine(Draw(12));
+		Console.WriteLine(Draw(2));
 		{
 			//Console.WriteLine("Введите первое целое число:");
 			//int N1 = int.Parse(Console.ReadLine());
@@ -49,51 +50,70 @@ class Program
 		Console.WriteLine("Для выхода из программы нажмите любую клавишу...");
 		Console.ReadKey();
 	}
-	public static string Draw(int fieldSize)
+	public static string Draw(int dimension)
 	{
-		string field = "";
-		fieldSize += 7;
-		for (int col = 1; col <= fieldSize; col++)
+		string result = "", part_1 = "", part_2 = "";
+		int cellIndex = 0;
+		char rowLetter = '0';
+		for (int row = 1; row <= dimension; row++)
 		{
-			for (int row = 1; row <= fieldSize; row++)
+			rowLetter = (char)(row + 96);
+			for (int col = 1; col <= dimension; col++)
 			{
-				if (col == 1)
+				cellIndex++;
+				if (row == 1)
 				{
-					if (row == 1) { field += "┌"; }
-
-					else if (row % 2 == 0) { field += "───"; }
-					else if (row % 2 > 0 && row != fieldSize) { field += "┬"; }
-					else if (row == fieldSize) { field += "┐\n"; }
-
+					part_2 += "│   ";
+					if (col == 1) { part_2 = rowLetter + part_2; part_1 += " ┌───"; }
+					else
+					{
+						part_1 += "┬───";
+						if (col == dimension)
+						{
+							part_1 += "┐\n";
+							part_2 += "│\n";
+						}
+					}
 				}
-				else if (col % 2 == 0)
+				else if (row == dimension)
 				{
-					if (row == 1) { field += "│"; }
-
-					else if (row % 2 == 0) { field += "   "; }
-					else if (row % 2 > 0 && row != fieldSize) { field += "│"; }
-					else if (row == fieldSize) { field += "│\n"; }
-	}
-				else if (col % 2 > 0 && col != fieldSize)
-				{
-					if (row == 1) { field += "├"; }
-
-					else if (row % 2 == 0) { field += "───"; }
-					else if (row % 2 > 0 && row != fieldSize) { field += "┼"; }
-					else if (row == fieldSize) { field += "┤\n"; }
+					part_1 += "│   ";
+					if (col == 1)
+					{
+						part_1 = rowLetter + part_1;
+						result += " ├───";
+						part_2 += " └───";
+					}
+					else
+					{
+						result += "┼───";
+						part_2 += "┴───";
+						if (col == dimension)
+						{
+							result += "┤\n";
+							part_1 += "│\n";
+							part_2 += "┘";
+						}
+					}
 				}
-				else if (col % 2 > 0 && col == fieldSize)
+				else
 				{
-					if (row == 1) { field += "└"; }
-
-					else if (row % 2 == 0) { field += "───"; }
-					else if (row % 2 > 0 && row != fieldSize) { field += "┴"; }
-					else if (row == fieldSize) { field += "┘\n"; }
+					part_2 += "│   ";
+					if (col == 1) { part_2 = rowLetter + part_2; part_1 += " ├───"; }
+					else
+					{
+						part_1 += "┼───";
+						if (col == dimension)
+						{
+							part_1 += "┤\n";
+							part_2 += "│\n";
+						}
+					}
 				}
 			}
-
+			result += part_1 + part_2;
+			part_1 = ""; part_2 = "";
 		}
-
-		return field;
+		return result;
 	}
 }
