@@ -21,22 +21,24 @@ class Game
 	private Player _player1 = null;
 	private Player _player2 = null;
 	private GameMode _gameMode = GameMode.Simple;
+	private int _cellCounts;
+
 	#endregion;
 
 	#region " Конструкторы "
 
-	public Game(Player player1, Player player2) : this(player1, player2, GameMode.Simple,0)
+	public Game(Player player1, Player player2) : this(player1, player2, GameMode.Simple, 0)
 	{ }
 
 	public Game(Player player1, Player player2, GameMode gameMode, int fieldSize)
 	{
-		if(player1 == null) { throw new ArgumentNullException("player1"); }
+		if (player1 == null) { throw new ArgumentNullException("player1"); }
 		if (player2 == null) { throw new ArgumentNullException("player2"); }
-		if(fieldSize < 3 || fieldSize > 10) { throw new ArgumentException("Размерность игрового поля должна быть в пределах от 3 до 10."); }
+		if (fieldSize < 3 || fieldSize > 10) { throw new ArgumentException("Размерность игрового поля должна быть в пределах от 3 до 10."); }
 
 		int arrayLen = fieldSize * fieldSize + 1;
 		cells = new Cell[arrayLen];
-		for (int index = 1; index < arrayLen; index++) { cells[index] = new Cell(index, fieldSize); }
+		for (int index = 1; index < arrayLen; index++) { cells[index] = new Cell(); }
 		_player1 = player1;
 		_player2 = player2;
 		_currentPlayer = _player1;
@@ -168,7 +170,7 @@ class Game
 			}
 		}
 
-		if (cellIndex == 0) { do { cellIndex = rnd.Next(1, 10); } while (!cells[cellIndex].IsEmpty); }
+		if (cellIndex == 0) { do { cellIndex = rnd.Next(1, _cellCounts + 1); } while (!cells[cellIndex].IsEmpty); }
 
 		cells[cellIndex].Value = _currentPlayer == Player1 ? Player1.Fishka : Player2.Fishka;
 
@@ -184,6 +186,8 @@ class Game
 
 	private int _getIndex(String coords)
 	{
+
+
 		switch (coords)
 		{
 			case "a1": return 1;
@@ -219,17 +223,27 @@ class Game
 	#endregion
 
 	#region " Отрисовка "
-	public string Draw()
+	public string Draw(int fieldSize)
 	{
-		return
-			"    1   2   3  \n" +
-			"  ┌───┬───┬───┐\n" +
-			" a│ " + cells[1].Value + " │ " + cells[2].Value + " │ " + cells[3].Value + " │\n" +
-			"  ├───┼───┼───┤\n" +
-			" b│ " + cells[4].Value + " │ " + cells[5].Value + " │ " + cells[6].Value + " │\n" +
-			"  ├───┼───┼───┤\n" +
-			" c│ " + cells[7].Value + " │ " + cells[8].Value + " │ " + cells[9].Value + " │\n" +
-			"  └───┴───┴───┘\n";
+		string field = "";
+		fieldSize += 4;
+		for (int col = 1; col <= fieldSize; col++)
+		{
+			for (int row = 1; row <= fieldSize; row++)
+			{
+				if (col == 1)
+				{
+					if (row == 1) { field += "┌"; }
+					else if (row % 2 == 0) { field += "───"; }
+					else if (row % 2 > 0 && row != fieldSize) { field += "┬"; }
+					else if (row == fieldSize) { field += "┐"; }
+
+				}
+			}
+
+		}
+
+		return field;
 	}
 	#endregion
 }

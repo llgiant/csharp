@@ -12,7 +12,7 @@ class Program
 		Console.InputEncoding = System.Text.Encoding.UTF8;
 		Console.OutputEncoding = System.Text.Encoding.UTF8;
 		Console.WriteLine("========================================================================");
-		Console.WriteLine("Прямоуголник");
+		Console.WriteLine("Прямоугольник");
 		Console.WriteLine("========================================================================");
 		Console.WriteLine();
 		appBegin:
