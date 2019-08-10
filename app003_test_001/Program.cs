@@ -9,7 +9,7 @@ class Program
 		Console.WriteLine("Что будет делать программа?");
 		Console.WriteLine("========================================================================");
 		Console.WriteLine();
-		Console.WriteLine(Draw(2));
+		Console.WriteLine(Draw(10));
 		{
 			//Console.WriteLine("Введите первое целое число:");
 			//int N1 = int.Parse(Console.ReadLine());
@@ -50,15 +50,29 @@ class Program
 		Console.WriteLine("Для выхода из программы нажмите любую клавишу...");
 		Console.ReadKey();
 	}
-	public static string Draw(int dimension)
+	public static string Draw(int fieldSize)
 	{
+		string numbers = "";
+		if (fieldSize < 10) { numbers = "12345678910".Substring(0, fieldSize); }
+		else {  numbers = "12345678910".Substring(0, fieldSize + 1); }
+		string Row = "a10".Substring(0, 1);
+		if (!letters.Contains(Row)) { return "Таких координат не существует"; }
+
+		string Col = strCoords.Substring(1);
+		if (!number.Contains(Col)) { return "Таких координат не существует"; }
 		string result = "", part_1 = "", part_2 = "";
 		int cellIndex = 0;
 		char rowLetter = '0';
-		for (int row = 1; row <= dimension; row++)
+		char rowNumber = '0';
+		string letters = " abcdefghij";
+		int length = letters.Length;
+		
+		
+		for (int row = 1; row <= fieldSize; row++)
 		{
+			rowNumber = (char)(row + 48);
 			rowLetter = (char)(row + 96);
-			for (int col = 1; col <= dimension; col++)
+			for (int col = 1; col <= fieldSize; col++)
 			{
 				cellIndex++;
 				if (row == 1)
@@ -68,14 +82,14 @@ class Program
 					else
 					{
 						part_1 += "┬───";
-						if (col == dimension)
+						if (col == fieldSize)
 						{
 							part_1 += "┐\n";
 							part_2 += "│\n";
 						}
 					}
 				}
-				else if (row == dimension)
+				else if (row == fieldSize)
 				{
 					part_1 += "│   ";
 					if (col == 1)
@@ -88,7 +102,7 @@ class Program
 					{
 						result += "┼───";
 						part_2 += "┴───";
-						if (col == dimension)
+						if (col == fieldSize)
 						{
 							result += "┤\n";
 							part_1 += "│\n";
@@ -103,7 +117,7 @@ class Program
 					else
 					{
 						part_1 += "┼───";
-						if (col == dimension)
+						if (col == fieldSize)
 						{
 							part_1 += "┤\n";
 							part_2 += "│\n";

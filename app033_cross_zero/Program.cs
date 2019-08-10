@@ -27,8 +27,21 @@ class Program
 		int gameMode = 0;                    // Вид игры, 0 - легкая(по умолчанию), 1 - сложная	
 		player1.Type = 0;
 		player2.Type = 0;
-
+		int fieldsize = 0;
 		#region Выбор игры
+		Console.WriteLine($"Выберите размерность поля. Введите число от 3 до 10:");
+		Cell cell = new Cell();
+		inputcellMode:
+		try
+		{
+			fieldsize = int.Parse(Console.ReadLine());
+		}
+		catch (Exception e)
+		{
+			Console.WriteLine(e.Message);
+			Console.WriteLine("Повторите:");
+			goto inputOpp;
+		}
 		Console.WriteLine($"Выбирите против кого вы будете играть:\n0-человек против человека\n1-человек против робота\n2-робота№1 против робот№2");
 		inputOpp:
 		try
@@ -95,7 +108,7 @@ class Program
 		#endregion
 
 
-		Game game = new Game(player1, player2, (GameMode)gameMode,10);
+		Game game = new Game(player1, player2, (GameMode)gameMode, fieldsize);
 		
 
 		string stepCoords = ""; //координаты введенные игроком
@@ -119,7 +132,7 @@ class Program
 				Console.ReadKey();
 			}
 
-			strError = game._step(stepCoords);
+			strError = game._step(stepCoords, fieldsize);
 
 			// проверка введенных координат
 			if (strError.Length > 0)

@@ -22,6 +22,7 @@ class Game
 	private Player _player2 = null;
 	private GameMode _gameMode = GameMode.Simple;
 	private int _cellCounts;
+	private int _fieldSize;
 
 	#endregion;
 
@@ -43,6 +44,7 @@ class Game
 		_player2 = player2;
 		_currentPlayer = _player1;
 		GameMode = gameMode;
+		_fieldSize = fieldSize;
 
 	}
 	#endregion
@@ -74,99 +76,103 @@ class Game
 	#endregion
 
 	#region " Функции "
-	public string _step(string coords)
+	public string _step(string coords, int fieldSize)
 	{
 		int cellIndex = 0;
+		string number = "";
+		string letters = " abcdefghij".Substring(1, fieldSize);
+		if (fieldSize < 10) { number = "12345678910".Substring(0, fieldSize); }
+		else { number = "12345678910".Substring(1, fieldSize + 1); }
+
+
+
 		if (_currentPlayer.Type != PlayerType.Robot1 && _currentPlayer.Type != PlayerType.Robot2)
 		{
 			if (string.IsNullOrEmpty(coords)) { return "Вы не ввели координаты"; }
+			if (fieldSize < 10)
+			{
+				string strCoords = coords.Trim().ToLower();
+				if (strCoords.Length < 1 && strCoords.Length > 3) { return "Координаты должны содержать одну букву и одну цифру"; }
 
-			string strCoords = coords.Trim().ToLower();
-			if (strCoords.Length != 2) { return "Координаты должны содержать одну букву и одну цифру"; }
+				string Row = strCoords.Substring(0, 1);
+				if (!letters.Contains(Row)) { return "Таких координат не существует"; }
 
-			string Row = strCoords.Substring(0, 1);
-			if (!"abc".Contains(Row)) { return "Таких координат не существует"; }
+				string Col = strCoords.Substring(1);
+				if (!number.Contains(Col)) { return "Таких координат не существует"; }
+				cellIndex = _getIndex(strCoords);
 
-			string Col = strCoords.Substring(1);
-			if (!"123".Contains(Col)) { return "Таких координат не существует"; }
-			cellIndex = _getIndex(strCoords);
+				if (!cells[cellIndex].IsEmpty) { return $"Ячейка {strCoords} уже занята."; }
+			}
 
-			if (!cells[cellIndex].IsEmpty) { return $"Ячейка {strCoords} уже занята."; }
 		}
 		else
 		{
 			if (_gameMode == GameMode.Hard)
 			{
+
+
 				#region СТРАТЕГИЯ ЗАЩИТЫ
 
-				//Ход в ячейку по горизонтали
-				if (cells[1].Value == Player1.Fishka && cells[2].Value == Player1.Fishka && cells[3].IsEmpty) { cellIndex = 3; }
-				else if (cells[1].Value == Player1.Fishka && cells[3].Value == Player1.Fishka && cells[2].IsEmpty) { cellIndex = 2; }
-				else if (cells[2].Value == Player1.Fishka && cells[3].Value == Player1.Fishka && cells[1].IsEmpty) { cellIndex = 1; }
+				int count = 0;
+				int countEmpty = 0;
+				//ход в ячейку по горизонтали
+				for (int col = 1; col <= _fieldSize; col++)
+				{
+					if (cells[col].Value == Player1.Fishka) { count++; }
+					if (cells[col].IsEmpty) { countEmpty++; cellIndex = col; }
+					if (countEmpty > 1 || (count < 4 && col == _fieldSize))
+					{
+						col += _fieldSize;
+						_fieldSize += _fieldSize;
+						cellIndex = 0;
+					}
 
-				else if (cells[4].Value == Player1.Fishka && cells[5].Value == Player1.Fishka && cells[6].IsEmpty) { cellIndex = 6; }
-				else if (cells[4].Value == Player1.Fishka && cells[6].Value == Player1.Fishka && cells[5].IsEmpty) { cellIndex = 5; }
-				else if (cells[5].Value == Player1.Fishka && cells[6].Value == Player1.Fishka && cells[4].IsEmpty) { cellIndex = 4; }
+				}
 
-				else if (cells[7].Value == Player1.Fishka && cells[8].Value == Player1.Fishka && cells[9].IsEmpty) { cellIndex = 9; }
-				else if (cells[7].Value == Player1.Fishka && cells[9].Value == Player1.Fishka && cells[8].IsEmpty) { cellIndex = 8; }
-				else if (cells[8].Value == Player1.Fishka && cells[9].Value == Player1.Fishka && cells[7].IsEmpty) { cellIndex = 7; }
-				//Ход в ячейку по вертикили
-				else if (cells[1].Value == Player1.Fishka && cells[4].Value == Player1.Fishka && cells[7].IsEmpty) { cellIndex = 7; }
-				else if (cells[1].Value == Player1.Fishka && cells[7].Value == Player1.Fishka && cells[4].IsEmpty) { cellIndex = 4; }
-				else if (cells[4].Value == Player1.Fishka && cells[7].Value == Player1.Fishka && cells[1].IsEmpty) { cellIndex = 1; }
+				//ход в ячейку по вертикали
+				int index = 1;
+				count = 0;
+				countEmpty = 0;
+				for (int row = index; row <= _fieldSize * _fieldSize; row += _fieldSize)
+				{
+					if (cells[row].Value == Player1.Fishka) { count++; }
+					if (cells[row].IsEmpty) { countEmpty++; cellIndex = row; }
+					if (countEmpty > 1 || (count < 4 && row == _fieldSize))
+					{
+						index++;
+						row += _fieldSize;
+						_fieldSize += _fieldSize;
+						cellIndex = 0;
+					}
+				}
 
-				else if (cells[2].Value == Player1.Fishka && cells[5].Value == Player1.Fishka && cells[8].IsEmpty) { cellIndex = 8; }
-				else if (cells[2].Value == Player1.Fishka && cells[8].Value == Player1.Fishka && cells[5].IsEmpty) { cellIndex = 5; }
-				else if (cells[8].Value == Player1.Fishka && cells[5].Value == Player1.Fishka && cells[2].IsEmpty) { cellIndex = 2; }
+				//ход в ячейку по диагонали слева направо
+				index = 1;
+				count = 0;
+				countEmpty = 0;
+				for (int diag1 = index; diag1 <= _fieldSize * _fieldSize; diag1 += _fieldSize + 1)
+				{
+					if (cells[diag1].Value == Player1.Fishka) { count++; }
+					if (cells[diag1].IsEmpty) { countEmpty++; cellIndex = diag1; }
+					if (countEmpty > 1) { break; }
+				}
 
-				else if (cells[3].Value == Player1.Fishka && cells[6].Value == Player1.Fishka && cells[9].IsEmpty) { cellIndex = 9; }
-				else if (cells[3].Value == Player1.Fishka && cells[9].Value == Player1.Fishka && cells[6].IsEmpty) { cellIndex = 6; }
-				else if (cells[6].Value == Player1.Fishka && cells[9].Value == Player1.Fishka && cells[3].IsEmpty) { cellIndex = 3; }
-				//Ход в ячейку по диагонали
-				else if (cells[3].Value == Player1.Fishka && cells[5].Value == Player1.Fishka && cells[7].IsEmpty) { cellIndex = 7; }
-				else if (cells[3].Value == Player1.Fishka && cells[7].Value == Player1.Fishka && cells[5].IsEmpty) { cellIndex = 5; }
-				else if (cells[5].Value == Player1.Fishka && cells[7].Value == Player1.Fishka && cells[3].IsEmpty) { cellIndex = 3; }
-
-				else if (cells[1].Value == Player1.Fishka && cells[5].Value == Player1.Fishka && cells[9].IsEmpty) { cellIndex = 9; }
-				else if (cells[1].Value == Player1.Fishka && cells[9].Value == Player1.Fishka && cells[5].IsEmpty) { cellIndex = 5; }
-				else if (cells[5].Value == Player1.Fishka && cells[9].Value == Player1.Fishka && cells[1].IsEmpty) { cellIndex = 1; }
+				//ход в ячейку по диагонали справа налево
+				index = _fieldSize;
+				count = 0;
+				countEmpty = 0;
+				for (int diag1 = index; diag1 <= _fieldSize * _fieldSize; diag1 += _fieldSize - 1)
+				{
+					if (cells[diag1].Value == Player1.Fishka) { count++; }
+					if (cells[diag1].IsEmpty) { countEmpty++; cellIndex = diag1; }
+					if (countEmpty > 1) { break; }
+				}
 				#endregion
 
 				#region СТРАТЕГИЯ НАПАДЕНИЯ
 
-				else if (cells[1].Value == Player2.Fishka && cells[2].Value == Player2.Fishka && cells[3].IsEmpty) { cellIndex = 3; }
-				else if (cells[1].Value == Player2.Fishka && cells[3].Value == Player2.Fishka && cells[2].IsEmpty) { cellIndex = 2; }
-				else if (cells[2].Value == Player2.Fishka && cells[3].Value == Player2.Fishka && cells[1].IsEmpty) { cellIndex = 1; }
-
-				else if (cells[4].Value == Player2.Fishka && cells[5].Value == Player2.Fishka && cells[6].IsEmpty) { cellIndex = 6; }
-				else if (cells[4].Value == Player2.Fishka && cells[6].Value == Player2.Fishka && cells[5].IsEmpty) { cellIndex = 5; }
-				else if (cells[5].Value == Player2.Fishka && cells[6].Value == Player2.Fishka && cells[4].IsEmpty) { cellIndex = 4; }
-
-				else if (cells[7].Value == Player2.Fishka && cells[8].Value == Player2.Fishka && cells[9].IsEmpty) { cellIndex = 9; }
-				else if (cells[7].Value == Player2.Fishka && cells[9].Value == Player2.Fishka && cells[8].IsEmpty) { cellIndex = 8; }
-				else if (cells[8].Value == Player2.Fishka && cells[9].Value == Player2.Fishka && cells[7].IsEmpty) { cellIndex = 7; }
-				//Ход в ячейку по вертикили
-				else if (cells[1].Value == Player2.Fishka && cells[4].Value == Player2.Fishka && cells[7].IsEmpty) { cellIndex = 7; }
-				else if (cells[1].Value == Player2.Fishka && cells[7].Value == Player2.Fishka && cells[4].IsEmpty) { cellIndex = 4; }
-				else if (cells[4].Value == Player2.Fishka && cells[7].Value == Player2.Fishka && cells[1].IsEmpty) { cellIndex = 1; }
-
-				else if (cells[2].Value == Player2.Fishka && cells[5].Value == Player2.Fishka && cells[8].IsEmpty) { cellIndex = 8; }
-				else if (cells[2].Value == Player2.Fishka && cells[8].Value == Player2.Fishka && cells[5].IsEmpty) { cellIndex = 5; }
-				else if (cells[8].Value == Player2.Fishka && cells[5].Value == Player2.Fishka && cells[2].IsEmpty) { cellIndex = 2; }
-
-				else if (cells[3].Value == Player2.Fishka && cells[6].Value == Player2.Fishka && cells[9].IsEmpty) { cellIndex = 9; }
-				else if (cells[3].Value == Player2.Fishka && cells[9].Value == Player2.Fishka && cells[6].IsEmpty) { cellIndex = 6; }
-				else if (cells[6].Value == Player2.Fishka && cells[9].Value == Player2.Fishka && cells[3].IsEmpty) { cellIndex = 3; }
-				//Ход в ячейку по диагонали
-				else if (cells[3].Value == Player2.Fishka && cells[5].Value == Player2.Fishka && cells[7].IsEmpty) { cellIndex = 7; }
-				else if (cells[3].Value == Player2.Fishka && cells[7].Value == Player2.Fishka && cells[5].IsEmpty) { cellIndex = 5; }
-				else if (cells[5].Value == Player2.Fishka && cells[7].Value == Player2.Fishka && cells[3].IsEmpty) { cellIndex = 3; }
-
-				else if (cells[1].Value == Player2.Fishka && cells[5].Value == Player2.Fishka && cells[9].IsEmpty) { cellIndex = 9; }
-				else if (cells[1].Value == Player2.Fishka && cells[9].Value == Player2.Fishka && cells[5].IsEmpty) { cellIndex = 5; }
-				else if (cells[5].Value == Player2.Fishka && cells[9].Value == Player2.Fishka && cells[1].IsEmpty) { cellIndex = 1; }
 				#endregion
+
 			}
 		}
 
@@ -184,7 +190,7 @@ class Game
 		return "";
 	}
 
-	private int _getIndex(String coords)
+	private int _getIndex(string coords)
 	{
 
 
@@ -223,28 +229,76 @@ class Game
 	#endregion
 
 	#region " Отрисовка "
-	public string Draw(int fieldSize)
+	public string Draw()
 	{
-		string field = "";
-		fieldSize += 4;
-		for (int col = 1; col <= fieldSize; col++)
+		string result = "", part_1 = "", part_2 = "";
+		int cellIndex = 0;
+		char rowLetter = '0';
+		int rowNumber = 0;
+		for (int row = 1; row <= _fieldSize; row++)
 		{
-			for (int row = 1; row <= fieldSize; row++)
+			rowNumber = (char)(row + 49);
+			rowLetter = (char)(row + 96);
+			for (int col = 1; col <= _fieldSize; col++)
 			{
-				if (col == 1)
+				cellIndex++;
+				if (row == 1)
 				{
-					if (row == 1) { field += "┌"; }
-					else if (row % 2 == 0) { field += "───"; }
-					else if (row % 2 > 0 && row != fieldSize) { field += "┬"; }
-					else if (row == fieldSize) { field += "┐"; }
-
+					part_2 += "│   ";
+					if (col == 1) { part_2 = rowLetter + part_2; part_1 += " ┌───"; }
+					else
+					{
+						part_1 += "┬───";
+						if (col == _fieldSize)
+						{
+							part_1 += "┐\n";
+							part_2 += "│\n";
+						}
+					}
+				}
+				else if (row == _fieldSize)
+				{
+					part_1 += "│   ";
+					if (col == 1)
+					{
+						part_1 = rowLetter + part_1;
+						result += " ├───";
+						part_2 += " └───";
+					}
+					else
+					{
+						result += "┼───";
+						part_2 += "┴───";
+						if (col == _fieldSize)
+						{
+							result += "┤\n";
+							part_1 += "│\n";
+							part_2 += "┘";
+						}
+					}
+				}
+				else
+				{
+					part_2 += "│   ";
+					if (col == 1) { part_2 = rowLetter + part_2; part_1 += " ├───"; }
+					else
+					{
+						part_1 += "┼───";
+						if (col == _fieldSize)
+						{
+							part_1 += "┤\n";
+							part_2 += "│\n";
+						}
+					}
 				}
 			}
-
+			result += part_1 + part_2;
+			part_1 = ""; part_2 = "";
 		}
-
-		return field;
+		return result;
 	}
+
+
 	#endregion
 }
 
