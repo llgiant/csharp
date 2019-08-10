@@ -12,7 +12,12 @@ class Cell
 
 	#region Свойства
 	public bool IsEmpty { get { return _value == " "; } }
-	public string Value { get { return _value; } set { _value = value; } }
+	public string Value
+    {
+        get { return _value; }
+        set { _value = value;}
+    }
+   
 	#endregion
 
 	#region Функции
