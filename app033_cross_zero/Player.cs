@@ -18,7 +18,7 @@ class Player
     #endregion
 
     #region " Конструкторы "
-    public Player() : this("Робот") { }
+    public Player() : this("Null", PlayerType.Human, "o") { }
     public Player(String name) : this(name, PlayerType.Human) { }
     public Player(String name, PlayerType PlayerType) : this(name, PlayerType.Human, "o") { }
 

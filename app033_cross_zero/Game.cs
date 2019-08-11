@@ -24,29 +24,27 @@ class Game
     private int _cellCounts;
     private int _fieldSize;
 
+
     #endregion;
 
     #region " Конструкторы "
-    public Game() : this(new Player(), new Player(), GameMode.Simple, 2)
+    public Game() : this(new Player(), new Player(), GameMode.Simple, 3)
     { }
 
-    public Game(Player player1, Player player2) : this(player1, player2, GameMode.Simple, 2)
+    public Game(Player player1, Player player2) : this(player1, player2, GameMode.Simple, 3)
     { }
 
     public Game(Player player1, Player player2, GameMode gameMode, int fieldSize)
     {
         if (player1 == null) { throw new ArgumentNullException("player1"); }
         if (player2 == null) { throw new ArgumentNullException("player2"); }
-        if (fieldSize < 2 || fieldSize > 10) { throw new ArgumentException("Размерность игрового поля должна быть в пределах от 3 до 10."); }
 
-        int arrayLen = fieldSize * fieldSize + 1;
-        cells = new Cell[arrayLen];
-        for (int index = 1; index < arrayLen; index++) { cells[index] = new Cell(); }
         _player1 = player1;
         _player2 = player2;
         _currentPlayer = _player1;
         GameMode = gameMode;
         FieldSize = fieldSize;
+
 
     }
     #endregion
@@ -66,7 +64,11 @@ class Game
         get { return _fieldSize; }
         set
         {
-            if (value < 2 || value > 10) { throw new Exception("Размерность игры должна быть в диапазоне от 2 до 10"); }
+            if (value < 2 || value > 10) { throw new ArgumentException("Размерность игрового поля должна быть в пределах от 3 до 10."); }
+
+            int arrayLen = value * value + 1;
+            cells = new Cell[arrayLen];
+            for (int index = 1; index < arrayLen; index++) { cells[index] = new Cell(); }
             _fieldSize = value;
         }
     }
@@ -92,33 +94,35 @@ class Game
     #endregion
 
     #region " Функции "
-    public string _step(string coords, int fieldSize)
+    public string _step(string coords)
     {
+        int stepFieldSize = FieldSize;
         int cellIndex = 0;
         string number = "";
-        string letters = " abcdefghij".Substring(1, fieldSize);
-        if (fieldSize < 10) { number = "12345678910".Substring(0, fieldSize); }
-        else { number = "12345678910".Substring(1, fieldSize + 1); }
+        string letters = " abcdefghij".Substring(1, FieldSize);
+        if (FieldSize < 10) { number = "12345678910".Substring(0, FieldSize); }
+        else { number = "12345678910".Substring(1, FieldSize + 1); }
 
 
 
         if (_currentPlayer.Type != PlayerType.Robot1 && _currentPlayer.Type != PlayerType.Robot2)
         {
             if (string.IsNullOrEmpty(coords)) { throw new Exception("Вы не ввели координаты"); }
-            if (fieldSize < 10)
-            {
-                string strCoords = coords.Trim().ToLower();
-                if (strCoords.Length < 1 && strCoords.Length > 3) { return "Координаты должны содержать одну букву и одну цифру"; }
 
-                string Row = strCoords.Substring(0, 1);
-                if (!letters.Contains(Row)) { return "Таких координат не существует"; }
 
-                string Col = strCoords.Substring(1);
-                if (!number.Contains(Col)) { return "Таких координат не существует"; }
-                cellIndex = _getIndex(strCoords);
+            string strCoords = coords.Trim().ToLower();
+            if (strCoords.Length < 1 && strCoords.Length > 3) { return "Координаты должны содержать одну букву и число от 1 до 10"; }
 
-                if (!cells[cellIndex].IsEmpty) { return $"Ячейка {strCoords} уже занята."; }
-            }
+            string Col = strCoords.Substring(0, 1);
+            if (!letters.Contains(Col)) { return "Таких координат не существует"; }
+
+            string Row = strCoords.Substring(1);
+            if (!number.Contains(Row)) { return "Таких координат не существует"; }
+
+            cellIndex = _getIndex(Row, Col);
+
+            if (!cells[cellIndex].IsEmpty) { return $"Ячейка {strCoords} уже занята."; }
+
 
         }
         else
@@ -130,62 +134,71 @@ class Game
                 int countEnemyFishka = 0;
                 int countEmpty = 0;
                 int emptyIndex = 0;
-                int  countPlayerFishka = 0;
+                int countPlayerFishka = 0;
                 //ход в ячейку по горизонтали
-                for (int col = 1; col <= _fieldSize; col++)
+                for (int col = 1; col <= stepFieldSize; col++)
                 {
-                    if (cells[col].Value != _currentPlayer.Fishka) { countEnemyFishka++; } else { countPlayerFishka++; }
-                    if (cells[col].IsEmpty) { countEmpty++; emptyIndex = col; }
-                    
 
-                    if (countPlayerFishka > 0 || countEmpty > 1 || (countEnemyFishka < _fieldSize - 1 && col == _fieldSize))
+                    if (cells[col].IsEmpty) { countEmpty++; emptyIndex = col; }
+                    if (cells[col].Value != _currentPlayer.Fishka) { countEnemyFishka++; } else { countPlayerFishka++; }
+
+                    if (countPlayerFishka > 0 || countEmpty > 1 || (countEnemyFishka < stepFieldSize - 1 && col == stepFieldSize))
                     {
-                        col += _fieldSize;
-                        _fieldSize += _fieldSize;
+                        col += stepFieldSize;
+                        stepFieldSize += stepFieldSize;
                         countEnemyFishka = 0;
                     }
-                    if(countEnemyFishka == 4) { cellIndex = emptyIndex; }
+                    if (countEnemyFishka == stepFieldSize - 1) { cellIndex = emptyIndex; }
                 }
 
                 //ход в ячейку по вертикали
-                if (cellIndex > 0) { continue; }
                 int index = 1;
-                countEnemyFishka = 0;
-                countEmpty = 0;
-                for (int row = index; row <= _fieldSize * _fieldSize; row += _fieldSize)
+                if (cellIndex == 0)
                 {
-                    
-                    if (cells[row].Value != _currentPlayer.Fishka) { countEnemyFishka++; } else { break; }
-                    if (cells[row].IsEmpty) { countEmpty++; cellIndex = row; }
-                    if (countEmpty > 1 || (countEnemyFishka < 4 && row == _fieldSize))
+
+                    countEnemyFishka = 0;
+                    countEmpty = 0;
+                    for (int row = index; row <= _fieldSize * _fieldSize; row += _fieldSize)
                     {
-                        index++;
-                        row += _fieldSize;
-                        _fieldSize += _fieldSize;
-                        cellIndex = 0;
+
+                        if (cells[row].Value != _currentPlayer.Fishka) { countEnemyFishka++; } else { break; }
+                        if (cells[row].IsEmpty) { countEmpty++; cellIndex = row; }
+                        if (countEmpty > 1 || (countEnemyFishka < _fieldSize - 1 && row == _fieldSize))
+                        {
+                            index++;
+                            row += _fieldSize;
+                            _fieldSize += _fieldSize;
+                            cellIndex = 0;
+                        }
                     }
                 }
 
-                //ход в ячейку по диагонали слева направо
-                index = 1;
-                countEnemyFishka = 0;
-                countEmpty = 0;
-                for (int diag1 = index; diag1 <= _fieldSize * _fieldSize; diag1 += _fieldSize + 1)
-                {
-                    if (cells[diag1].Value == Player1.Fishka) { countEnemyFishka++; }
-                    if (cells[diag1].IsEmpty) { countEmpty++; cellIndex = diag1; }
-                    if (countEmpty > 1) { break; }
-                }
 
-                //ход в ячейку по диагонали справа налево
-                index = _fieldSize;
-                countEnemyFishka = 0;
-                countEmpty = 0;
-                for (int diag1 = index; diag1 <= _fieldSize * _fieldSize; diag1 += _fieldSize - 1)
+                //ход в ячейку по диагонали слева направо
+                if (cellIndex == 0)
                 {
-                    if (cells[diag1].Value == Player1.Fishka) { countEnemyFishka++; }
-                    if (cells[diag1].IsEmpty) { countEmpty++; cellIndex = diag1; }
-                    if (countEmpty > 1) { break; }
+                    index = 1;
+                    countEnemyFishka = 0;
+                    countEmpty = 0;
+                    for (int diag1 = index; diag1 <= _fieldSize * _fieldSize; diag1 += _fieldSize + 1)
+                    {
+                        if (cells[diag1].Value == Player1.Fishka) { countEnemyFishka++; }
+                        if (cells[diag1].IsEmpty) { countEmpty++; cellIndex = diag1; }
+                        if (countEmpty > 1) { break; }
+                    }
+                }
+                //ход в ячейку по диагонали справа налево
+                if (cellIndex == 0)
+                {
+                    index = _fieldSize;
+                    countEnemyFishka = 0;
+                    countEmpty = 0;
+                    for (int diag1 = index; diag1 <= _fieldSize * _fieldSize; diag1 += _fieldSize - 1)
+                    {
+                        if (cells[diag1].Value == Player1.Fishka) { countEnemyFishka++; }
+                        if (cells[diag1].IsEmpty) { countEmpty++; cellIndex = diag1; }
+                        if (countEmpty > 1) { break; }
+                    }
                 }
                 #endregion
 
@@ -210,23 +223,28 @@ class Game
         return "";
     }
 
-    private int _getIndex(string coords)
+    private int _getIndex(string Row, string Col)
     {
+        int col = 0;
+        int row = int.Parse(Row);
 
-
-        switch (coords)
+        switch (Col)
         {
-            case "a1": return 1;
-            case "a2": return 2;
-            case "a3": return 3;
-            case "b1": return 4;
-            case "b2": return 5;
-            case "b3": return 6;
-            case "c1": return 7;
-            case "c2": return 8;
-            case "c3": return 9;
-            default: return 0;
+            case "a": col = 1; break;
+            case "b": col = 2; break;
+            case "c": col = 3; break;
+            case "d": col = 4; break;
+            case "e": col = 5; break;
+            case "f": col = 6; break;
+            case "g": col = 7; break;
+            case "h": col = 8; break;
+            case "i": col = 9; break;
+            case "j": col = 9; break;
         }
+
+        if (col == 1) { return row; }
+        else { return col * FieldSize - FieldSize - row; }
+
     }
 
     private bool _allEmpty()
@@ -237,14 +255,24 @@ class Game
 
     private bool _checkFinal()
     {
-        return (cells[1].Value == cells[2].Value && cells[1].Value == cells[3].Value && !cells[1].IsEmpty) ||
-               (cells[4].Value == cells[5].Value && cells[4].Value == cells[6].Value && !cells[4].IsEmpty) ||
-               (cells[7].Value == cells[8].Value && cells[7].Value == cells[9].Value && !cells[7].IsEmpty) ||
-               (cells[1].Value == cells[4].Value && cells[1].Value == cells[7].Value && !cells[1].IsEmpty) ||
-               (cells[2].Value == cells[5].Value && cells[2].Value == cells[8].Value && !cells[2].IsEmpty) ||
-               (cells[3].Value == cells[6].Value && cells[3].Value == cells[9].Value && !cells[3].IsEmpty) ||
-               (cells[1].Value == cells[5].Value && cells[1].Value == cells[9].Value && !cells[1].IsEmpty) ||
-               (cells[3].Value == cells[5].Value && cells[3].Value == cells[7].Value && !cells[3].IsEmpty);
+        int countPlayerFishka = 1;
+        int cellCount = 1;
+        int countCol = 1;
+        //Проверка по горизонтали
+        for (int col = 1; col <= FieldSize * FieldSize; col++)
+        {
+            if (col + 1 <= FieldSize)
+            {
+                if (cells[col].Value == cells[col + 1].Value && !cells[col].IsEmpty) { countPlayerFishka++; }
+            }
+            if (countPlayerFishka == FieldSize) { return true; }
+            if (cells[col].IsEmpty || cellCount == FieldSize) { cellCount = 1; col = countCol * FieldSize + 1; countCol++; continue; }
+            cellCount++;
+        }
+
+
+
+        return false;
     }
     #endregion
 
@@ -255,6 +283,7 @@ class Game
         int cellIndex = 0;
         char rowLetter = '0';
         int rowNumber = 0;
+        int cellNumber = 1;
         for (int row = 1; row <= _fieldSize; row++)
         {
             rowNumber = (char)(row + 49);
@@ -264,7 +293,8 @@ class Game
                 cellIndex++;
                 if (row == 1)
                 {
-                    part_2 += "│   ";
+                    part_2 += $"│ {cells[cellNumber].Value} ";
+                    cellNumber++;
                     if (col == 1) { part_2 = rowLetter + part_2; part_1 += " ┌───"; }
                     else
                     {

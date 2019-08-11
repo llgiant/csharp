@@ -16,11 +16,11 @@ class Program
     #endregion  
         
     appBegin:
-        #region Объекты класса Player,Cell,Game
+        #region Объекты класса Player,Cell,Game             
+        Cell cell = new Cell();
         Player player1 = new Player();
         Player player2 = new Player();
-        Cell cell = new Cell();
-        Game game = new Game();
+        Game game = new Game(player1, player2);
         #endregion
 
         #region Поля класса
@@ -72,8 +72,7 @@ class Program
                 Console.WriteLine(e.Message);
                 Console.WriteLine("Повторите:");
                 goto inputLevel;
-            }
-            if (gameMode < 0 || gameMode > 1) { Console.WriteLine("Такой сложности игры нет, повторите!"); goto inputLevel; }
+            }           
         }
         #endregion
 
@@ -115,8 +114,8 @@ class Program
         int fishka = rnd.Next(0, 2);
         player1.Fishka = fishka == 0 ? "o" : "x";
         player2.Fishka = "x".Contains(player1.Fishka) ? "o" : "x";
-        Console.WriteLine($"{player1.Name} ходит {player1.Fishka}");
-        Console.WriteLine($"{player2.Name} ходит {player2.Fishka}");
+        Console.WriteLine($"{player1.Name} ходит \"{player1.Fishka}\" ");
+        Console.WriteLine($"{player2.Name} ходит \"{player2.Fishka}\"");
         #endregion
 
         string stepCoords = ""; //координаты введенные игроком
@@ -140,7 +139,7 @@ class Program
                 Console.ReadKey();
             }
 
-            strError = game._step(stepCoords, fieldsize);
+            strError = game._step(stepCoords);
 
             // проверка введенных координат
             if (strError.Length > 0)
