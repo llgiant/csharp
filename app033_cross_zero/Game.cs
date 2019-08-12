@@ -138,9 +138,10 @@ class Game
                 //ход в ячейку по горизонтали
                 for (int col = 1; col <= stepFieldSize; col++)
                 {
-
+                    //Если ячейка пуста увеличиваем счетчик пустых и и присваиваем индекс пустой переменной emptyIndex
                     if (cells[col].IsEmpty) { countEmpty++; emptyIndex = col; }
-                    if (cells[col].Value != _currentPlayer.Fishka) { countEnemyFishka++; } else { countPlayerFishka++; }
+                    //Если ячейка не пуста проверяем там крестик или нолик при этом увеличиваем значение переменных на 1
+                    else { if (cells[col].Value == _currentPlayer.Fishka) { countPlayerFishka++; } else { countEnemyFishka++; } }
 
                     if (countPlayerFishka > 0 || countEmpty > 1 || (countEnemyFishka < stepFieldSize - 1 && col == stepFieldSize))
                     {
@@ -148,7 +149,7 @@ class Game
                         stepFieldSize += stepFieldSize;
                         countEnemyFishka = 0;
                     }
-                    if (countEnemyFishka == stepFieldSize - 1) { cellIndex = emptyIndex; }
+                    if (countEnemyFishka == stepFieldSize - 1) { cellIndex = emptyIndex; break; }
                 }
 
                 //ход в ячейку по вертикали
@@ -266,7 +267,7 @@ class Game
                 if (cells[col].Value == cells[col + 1].Value && !cells[col].IsEmpty) { countPlayerFishka++; }
             }
             if (countPlayerFishka == FieldSize) { return true; }
-            if (cells[col].IsEmpty || cellCount == FieldSize) { cellCount = 1; col = countCol * FieldSize + 1; countCol++; continue; }
+            if (cells[col].IsEmpty || cellCount == FieldSize) { cellCount = 1; col = countCol * FieldSize; countCol++; continue; }
             cellCount++;
         }
 
@@ -294,7 +295,7 @@ class Game
                 if (row == 1)
                 {
                     part_2 += $"│ {cells[cellNumber].Value} ";
-                    cellNumber++;
+                    cellNumber++; //номер ячейки
                     if (col == 1) { part_2 = rowLetter + part_2; part_1 += " ┌───"; }
                     else
                     {
