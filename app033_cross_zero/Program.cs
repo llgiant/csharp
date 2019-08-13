@@ -33,7 +33,7 @@ class Program
         #endregion
 
         #region Выбор размерности игры
-        Console.WriteLine($"Выбирите размерность поля от 2 до 10:");
+        Console.WriteLine($"Выбирите размерность поля от 3 до 8:");
     inputcellMode:
         try { game.FieldSize = int.Parse(Console.ReadLine()); }
         catch (Exception e)

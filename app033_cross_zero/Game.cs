@@ -35,11 +35,8 @@ class Game
 
 	public Game(Player player1, Player player2, GameMode gameMode, int fieldSize)
 	{
-		if (player1 == null) { throw new ArgumentNullException("player1"); }
-		if (player2 == null) { throw new ArgumentNullException("player2"); }
-
-		_player1 = player1;
-		_player2 = player2;
+		_player1 = player1 ?? throw new ArgumentNullException("player1");
+		_player2 = player2 ?? throw new ArgumentNullException("player2");
 		_currentPlayer = _player1;
 		GameMode = gameMode;
 		FieldSize = fieldSize;
@@ -63,7 +60,7 @@ class Game
 		get { return _fieldSize; }
 		set
 		{
-			if (value < 2 || value > 10) { throw new ArgumentException("Размерность игрового поля должна быть в пределах от 3 до 10."); }
+			if (value < 3 || value > 8) { throw new ArgumentException("Размерность игрового поля должна быть в пределах от 3 до 8."); }
 
 			int arrayLen = value * value + 1;
 			cells = new Cell[arrayLen];
@@ -181,8 +178,6 @@ class Game
 				int countEnemyFilled = 0;
 				for (int rc = 1; rc <= _fieldSize; rc++)
 				{
-
-
 					//перебирает ячейки в строке для нападения (победы)
 					for (int index = 1; index <= _fieldSize; index++)
 					{
@@ -190,8 +185,9 @@ class Game
 						else if (cells[index].Value == _currentPlayer.Fishka) { countFilled++; }
 						else if (cells[index].Value != _currentPlayer.Fishka) { countEnemyFilled++; }
 					}
-					if (countEnemyFilled == _fieldSize - 1) { goto makeStep; }
-					if (countFilled == _fieldSize - 1) { goto makeStep; }
+					if (countEnemyFilled == _fieldSize - 1 && cellIndex > 0) { goto makeStep; }
+					else if (countFilled == _fieldSize - 1 && cellIndex > 0) { goto makeStep; }
+
 					countFilled = 0;
 					cellIndex = 0;
 					countEnemyFilled = 0;
@@ -201,10 +197,10 @@ class Game
 					{
 						if (cells[index].IsEmpty) { cellIndex = index; }
 						else if (cells[index].Value == _currentPlayer.Fishka) { countFilled++; }
-						else if (cells[index].Value != _currentPlayer.Fishka) { countFilled++; }
+						else if (cells[index].Value != _currentPlayer.Fishka) { countEnemyFilled++; }
 					}
-					if (countFilled == _fieldSize - 1) { goto makeStep; }
-					if (countEnemyFilled == _fieldSize - 1) { goto makeStep; }
+					if (countFilled == _fieldSize - 1 && cellIndex > 0) { goto makeStep; }
+					if (countEnemyFilled == _fieldSize - 1 && cellIndex > 0) { goto makeStep; }
 					countFilled = 0;
 					cellIndex = 0;
 					countEnemyFilled = 0;
@@ -359,7 +355,7 @@ class Game
 			result += part_1 + part_2;
 			part_1 = ""; part_2 = "";
 		}
-		return numbers +"\n"+ result;
+		return numbers + "\n" + result;
 	}
 
 	#endregion
