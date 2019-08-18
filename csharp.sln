@@ -75,6 +75,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "app034_random", "app034_ran
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "app035_password_generator", "app035_password_generator\app035_password_generator.csproj", "{FA289422-0E24-4D09-9823-296E6C820C28}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "app036_list", "app036_list\app036_list.csproj", "{F5803834-F8BE-419C-9E20-74D74FD4D046}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -225,6 +227,10 @@ Global
 		{FA289422-0E24-4D09-9823-296E6C820C28}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA289422-0E24-4D09-9823-296E6C820C28}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA289422-0E24-4D09-9823-296E6C820C28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5803834-F8BE-419C-9E20-74D74FD4D046}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5803834-F8BE-419C-9E20-74D74FD4D046}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5803834-F8BE-419C-9E20-74D74FD4D046}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5803834-F8BE-419C-9E20-74D74FD4D046}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
