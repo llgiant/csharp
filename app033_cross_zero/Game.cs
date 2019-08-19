@@ -27,12 +27,8 @@ class Game
 	#endregion;
 
 	#region " Конструкторы "
-	public Game() : this(new Player(), new Player(), GameMode.Simple, 3)
-	{ }
-
-	public Game(Player player1, Player player2) : this(player1, player2, GameMode.Simple, 3)
-	{ }
-
+	public Game() : this(new Player(), new Player(), GameMode.Simple, 3){ }
+	public Game(Player player1, Player player2) : this(player1, player2, GameMode.Simple, 3)	{ }
 	public Game(Player player1, Player player2, GameMode gameMode, int fieldSize)
 	{
 		_player1 = player1 ?? throw new ArgumentNullException("player1");
@@ -40,8 +36,6 @@ class Game
 		_currentPlayer = _player1;
 		GameMode = gameMode;
 		FieldSize = fieldSize;
-
-
 	}
 	#endregion
 

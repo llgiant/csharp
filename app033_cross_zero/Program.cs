@@ -150,7 +150,7 @@ class Program
 
 		} while (!game.IsFinal);
 		Console.Write(game.Draw());
-
+		#region Футер
 		Console.WriteLine("========================================================================");
 		Console.WriteLine("Игра окончена.");
 		if (game.Winner == null) { Console.WriteLine("Ничья!"); }
@@ -161,5 +161,6 @@ class Program
 		Console.WriteLine("========================================================================");
 		Console.WriteLine("Выйти из программы [y/n]?");
 		if (Console.ReadLine().Trim().ToLower() == "n") { goto appBegin; }
+		#endregion
 	}
 }
