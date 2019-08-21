@@ -32,15 +32,11 @@ class Game
 		_currentPlayer = _player1;
 		if (gameMode < 0 || gameMode > (GameMode)1) { throw new Exception("В игре всего два уровня 0 - легкий и 1 - сложный"); }
 		else { _gameMode = gameMode; }
+	}
 	#endregion
 
-		#region " Свойства "
-	public GameMode GameMode
-	{
-		get { return _gameMode; }
-
-	}
-
+	#region " Свойства "
+	public GameMode GameMode { get { return _gameMode; } }
 	public Player Player1 { get { return _player1; } }
 	public Player Player2 { get { return _player2; } }
 	public Player CurrentPlayer { get { return _currentPlayer; } }
@@ -56,4 +52,5 @@ class Game
 	}
 
 	public bool IsFinal { get { return _isFinal; } }
-	#endregion}
+	#endregion
+}

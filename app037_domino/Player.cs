@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 public enum PlayerType
 {
 	Human = 0,
-	Robot1 = 1,
-	Robot2 = 2
+	Robot1 = 1
 }
 class Player
 {
@@ -51,7 +50,6 @@ class Player
 	#endregion
 
 	#region Функции
-
 	private static string _normalize(string name)
 	{
 		name = name.ToLower().Trim().Replace(" ", "");

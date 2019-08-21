@@ -19,7 +19,10 @@ class Program
 		appBegin:
 		#endregion
 
+		//Заполнение базара
+		List<Bone> list = new List<Bone>() {new };
 		List<Bone> bazar = new List<Bone>();
+
 		List<Bone> field = new List<Bone>();
 		List<Bone> player1 = new List<Bone>();
 		List<Bone> player2 = new List<Bone>();
@@ -29,10 +32,28 @@ class Program
 		{
 			for (int right = left; right <= 6; right++)
 			{
-				bazar.Add(new Bone(left, right));
+				switch (rnd.Next(1, 4))
+				{
+					case 1:
+						if (player1.Count < 6) { player1.Add(new Bone(left, right)); }
+						break;
+					case 2:
+						if (player2.Count < 6) { player2.Add(new Bone(left, right)); }
+						break;
+					case 3:
+						bazar.Add(new Bone(left, right));
+						break;
+				}
 			}
 		}
 
+		int count = 0;
+		while(count < 28)
+		{
+
+		}
+
+		//
 
 
 

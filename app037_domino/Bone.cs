@@ -19,6 +19,7 @@ class Bone
 	{
 		if (left < 0 || left > 6) { throw new Exception("Значение должно быть в диапазоне от 0 до 6"); } else { _left = left; }
 		if (right < 0 || right > 6) { throw new Exception("Значение должно быть в диапазоне от 0 до 6"); } else { _right = right; }
+
 	}
 	#endregion
 
