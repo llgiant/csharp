@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 public enum PlayerType
 {
 	Human = 0,
-	Robot1 = 1
+	Robot1 = 1,
+    Robot2 = 2
 }
 class Player
 {

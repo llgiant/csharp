@@ -27,8 +27,12 @@ class Game
 	#endregion;
 
 	#region " Конструкторы "
-	public Game() : this(new Player(), new Player(), GameMode.Simple, 3){ }
-	public Game(Player player1, Player player2) : this(player1, player2, GameMode.Simple, 3)	{ }
+	public Game() : this(new Player(), new Player(), GameMode.Simple, 3)
+	{ }
+
+	public Game(Player player1, Player player2) : this(player1, player2, GameMode.Simple, 3)
+	{ }
+
 	public Game(Player player1, Player player2, GameMode gameMode, int fieldSize)
 	{
 		_player1 = player1 ?? throw new ArgumentNullException("player1");
@@ -36,6 +40,8 @@ class Game
 		_currentPlayer = _player1;
 		GameMode = gameMode;
 		FieldSize = fieldSize;
+
+
 	}
 	#endregion
 
@@ -190,7 +196,7 @@ class Game
 					else if (countEnemyFilled == _fieldSize - 1 && cellIndex > 0) { goto makeStep; }
 
 
-					indexCol += colFieldsize;
+					indexCol += _fieldSize;
 					colFieldsize += _fieldSize;
 					countFilled = 0;
 					cellIndex = 0;
@@ -210,7 +216,9 @@ class Game
 					countFilled = 0;
 					cellIndex = 0;
 					countEnemyFilled = 0;
-				}
+                    countEmpty = 0;
+
+                }
 
 				//ход в ячейку по диагонали слева на право
 				for (int index = 1; index <= _fieldSize * _fieldSize; index += _fieldSize + 1)
@@ -309,7 +317,7 @@ class Game
 			}
 			if (countFilled == _fieldSize) { return true; }
 
-			indexCol = _fieldSize * rc;
+			indexCol = _fieldSize * rc + 1;
 			colFieldsize += _fieldSize;
 			countFilled = 0;
 
