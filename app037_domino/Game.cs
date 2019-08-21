@@ -103,4 +103,16 @@ class Game
 
 	public bool IsFinal { get { return _isFinal; } }
 	#endregion
+
+	#region
+
+	string part1;
+	string part2;
+	string result;
+	string player;
+
+
+	for(index = 0; index < Stopka.Bazzar)
+
+	#endregion
 }
