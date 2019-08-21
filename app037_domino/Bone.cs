@@ -26,7 +26,8 @@ class Bone
 	#region Свойства
 	public int Left { get { return _left; } }
 	public int Right { get { return _right; } }
-	public int Rank { get {return _left +_right; } }
+	public int Rank { get { return _left + _right; } }
+	public bool isDouble { get { return _left == _right; } }
 	#endregion
 
 	#region Функции

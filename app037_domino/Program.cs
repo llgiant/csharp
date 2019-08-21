@@ -19,39 +19,20 @@ class Program
     appBegin:
         #endregion
 
-        #region РАЗДАЧА
-        List<Bone> bazar = new List<Bone>();
-        List<Bone> field = new List<Bone>();
-        List<Bone> playerOne = new List<Bone>();
-        List<Bone> playerTwo = new List<Bone>();
-
-        while (field.Count < 28)
-        {
-            int left = rnd.Next(0, 7);
-            int right = rnd.Next(0, 7);
-            if (!field.Contains(new Bone(left, right)))
-            {
-                if (playerOne.Count < 6) { playerOne.Add(new Bone(left, right)); }
-                else if (playerTwo.Count < 6) { playerTwo.Add(new Bone(left, right)); }
-                else { bazar.Add(new Bone(left, right)); }
-                field.Add(new Bone(left, right));
-            }
-        }
-        field.Clear();
-        #endregion
+        
 
         #region Объекты класса Player,Game             
         Player player1 = new Player();
         Player player2 = new Player();
         Game game = new Game(player1, player2);
-        #endregion
+		#endregion
 
-        #region Поля класса
-        playerOne.Name = "Робот№1";             //имя первого игрока по умолчанию
-        playerTwo.Name = "Робот№2";            //имя второго игрока по умолчанию
+		#region Поля класса
+		player1.Name = "Робот№1";             //имя первого игрока по умолчанию
+		player2.Name = "Робот№2";            //имя второго игрока по умолчанию
         int gameMode = 0;                    // Вид игры, 0 - легкая(по умолчанию), 1 - сложная	
-        playerOne.Type = 0;
-        playerTwo.Type = 0;
+		player1.Type = 0;
+		player2.Type = 0;
         #endregion
 
         #region Выбор сложности игры		
