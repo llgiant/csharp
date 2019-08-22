@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 public enum GameMode
 {
 	Simple = 0,
 	Hard = 1
 }
-
 public enum Stopka
 {
 	Bazzar = 0,
@@ -80,9 +78,6 @@ class Game
 		_currentPlayer = startPlayer == Stopka.Player1 ? _player1 : _player2;
 		#endregion
 	}
-
-
-
 	#endregion
 
 	#region " Свойства "
@@ -104,15 +99,38 @@ class Game
 	public bool IsFinal { get { return _isFinal; } }
 	#endregion
 
-	#region
+	#region Отрисовка
+	public string Draw()
+	{
+		string line = "";               //добавление тире м
+		string tabelBones = "";         //содержимое базара
+		string playerBones = "";        //кости текущего игрока
+		int playerBonesCount =          //количество костей текущего игрока	
+			_currentPlayer == _player1 ? Bones[1].Count : Bones[2].Count;
+		int maxBonesCount =             //большее число костей текущего игрока и стола	
+			Bones[3].Count >= playerBonesCount ? Bones[3].Count : playerBonesCount;
+		int index = 0;                  //индекс списка
+		string opponentName =           //иммя противника
+			_currentPlayer == _player1 ? _player2.Name : _player1.Name;
+		int opponentCount =             //количество костей противника
+			_currentPlayer == _player1 ? Bones[2].Count : Bones[1].Count;
 
-	string part1;
-	string part2;
-	string result;
-	string player;
+		do
+		{
+			if (index < Bones[3].Count)
+			{
+				line += "­­­­­­­­­­-----";
+				tabelBones += $"[{Bones[3][index].Left}|{Bones[3][index].Right}";
+			}
+			if (index < 6) { playerBones += _currentPlayer == _player1 ? $"{ Bones[1][index]}" : $"{ Bones[2][index]}"; }
+			index++;
+
+		}
+		while (index < maxBonesCount);
 
 
-	for(index = 0; index < Stopka.Bazzar)
 
+		return $"nКостей на Базаре: {Bones[0].Count}\nКостей у игрока {opponentName}:{opponentCount}\n{line}\n{tabelBones}\n{line}\n{playerBones}"; ;
+	}
 	#endregion
 }
