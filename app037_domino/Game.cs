@@ -126,7 +126,7 @@ class Game
 			index++;
 		}
 		while (index < maxBonesCount);
-		return $"nКостей на Базаре: {Bones[0].Count}\nКостей у игрока {opponentName}:{opponentCount}\n{line}\n{tabelBones}\n{line}\n{playerBones}"; ;
+		return $"Костей на Базаре: {Bones[0].Count}\nКостей у игрока {opponentName}:{opponentCount}\n{line}\n{tabelBones}\n{line}\n{playerBones}"; ;
 	}
 	#endregion
 }
