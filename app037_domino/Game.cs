@@ -124,12 +124,8 @@ class Game
 			}
 			if (index < 6) { playerBones += _currentPlayer == _player1 ? $"{ Bones[1][index]}" : $"{ Bones[2][index]}"; }
 			index++;
-
 		}
 		while (index < maxBonesCount);
-
-
-
 		return $"nКостей на Базаре: {Bones[0].Count}\nКостей у игрока {opponentName}:{opponentCount}\n{line}\n{tabelBones}\n{line}\n{playerBones}"; ;
 	}
 	#endregion
