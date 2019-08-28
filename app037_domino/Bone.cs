@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 enum Side
 {
@@ -28,11 +26,11 @@ class Bone
 	public int Right { get { return _right; } }
 	public int Rank { get { return _left + _right; } }
 	public bool isDouble { get { return _left == _right; } }
+	public string Image { get { return $"[{_left}|{_right}]"; } }
 	#endregion
 
 	#region Функции
 	public bool Contains(int number) { return _left == number || _right == number; }
-	public string Draw() { return $"[{_left}|{_right}]"; }
 	#endregion
 
 	#region Методы
