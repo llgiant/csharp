@@ -18,7 +18,7 @@ class Program
         SoundPlayer sp = new SoundPlayer();
         sp.SoundLocation = @"C:\Users\Operator\Desktop\123.wav";
         sp.Load();
-        sp.St;
+        sp.Play();
 
     appExit:;
         Console.WriteLine();
