@@ -1,0 +1,1 @@
+﻿document.getElementById("page-time").innerText = Date.now();

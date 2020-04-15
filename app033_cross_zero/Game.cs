@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 
 public enum GameMode
 {
@@ -14,7 +11,7 @@ class Game
 {
 	#region " Локальные переменные "
 	private Random rnd = new Random();
-	private Player _currentPlayer = null; // Поле устанавливает
+	private Player _currentPlayer = null;
 	private Player _winner = null;
 	private Cell[] cells;
 	private bool _isFinal = false;
@@ -22,17 +19,10 @@ class Game
 	private Player _player2 = null;
 	private GameMode _gameMode = GameMode.Simple;
 	private int _fieldSize;
-
-
 	#endregion;
 
-	#region " Конструкторы "
-	public Game() : this(new Player(), new Player(), GameMode.Simple, 3)
-	{ }
-
-	public Game(Player player1, Player player2) : this(player1, player2, GameMode.Simple, 3)
-	{ }
-
+	#region " Конструкторы " 
+	public Game(Player player1, Player player2) : this(player1, player2, GameMode.Simple, 3) { }
 	public Game(Player player1, Player player2, GameMode gameMode, int fieldSize)
 	{
 		_player1 = player1 ?? throw new ArgumentNullException("player1");
@@ -40,9 +30,18 @@ class Game
 		_currentPlayer = _player1;
 		GameMode = gameMode;
 		FieldSize = fieldSize;
-
-
 	}
+	private Game(string player1, string player2, int currentplayer, int gamemode, int fieldsize, string strCells)
+	{
+		_player1 = Player.Deserialize(player1);
+		_player2 = Player.Deserialize(player2);
+		_currentPlayer = currentplayer == 0 ? _player1 : _player2;
+		GameMode = (GameMode)gamemode;
+		FieldSize = fieldsize;
+		//Присваиваем значения загруженные из файла клеткам 
+		for (int index = 1; index <= strCells.Length; index++) { cells[index] = Cell.Deserialize(strCells[index - 1].ToString()); }
+	}
+
 	#endregion
 
 	#region " Свойства "
@@ -68,29 +67,16 @@ class Game
 			_fieldSize = value;
 		}
 	}
-
-
 	public Player Player1 { get { return _player1; } }
 	public Player Player2 { get { return _player2; } }
 	public Player CurrentPlayer { get { return _currentPlayer; } }
-
 	public Player Winner { get { return _winner; } }
-
-	public Player Loser
-	{
-		get
-		{
-			if (_winner == Player1) { return Player2; }
-			else if (_winner == Player2) { return Player1; }
-			return null;
-		}
-	}
-
+	public Player Loser { get { if (_winner == Player1) { return Player2; } else if (_winner == Player2) { return Player1; } return null; } }
 	public bool IsFinal { get { return _isFinal; } }
 	#endregion
 
 	#region " Функции "
-	public string _step(string coords)
+	public string Step(string coords)
 	{
 		int stepFieldSize = FieldSize;
 		int cellIndex = 0;
@@ -99,12 +85,9 @@ class Game
 		if (FieldSize < 10) { number = "12345678910".Substring(0, FieldSize); }
 		else { number = "12345678910".Substring(1, FieldSize + 1); }
 
-
-
-		if (_currentPlayer.Type != PlayerType.Robot1 && _currentPlayer.Type != PlayerType.Robot2)
+		if (_currentPlayer.Type != PlayerType.Robot)
 		{
-			if (string.IsNullOrEmpty(coords)) { return "Вы не ввели координаты"; }
-
+			if (string.IsNullOrEmpty(coords)) { throw new Exception("Вы не ввели координаты"); }
 
 			string strCoords = coords.Trim().ToLower();
 			if (strCoords.Length < 1 && strCoords.Length > 3) { return "Координаты должны содержать одну букву и число от 1 до 10"; }
@@ -118,8 +101,6 @@ class Game
 			cellIndex = _getIndex(Row, Col);
 
 			if (!cells[cellIndex].IsEmpty) { return $"Ячейка {strCoords} уже занята."; }
-
-
 		}
 		else
 		{
@@ -171,43 +152,36 @@ class Game
 								   }
 								   */
 
-
 				#endregion
-
-
 
 				int countFilled = 0;
 				int countEnemyFilled = 0;
 				int indexCol = 1;
 				int colFieldsize = _fieldSize;
-				int countEmpty = 0;
 
 				for (int rc = 1; rc <= _fieldSize; rc++)
 				{
 					//перебирает ячейки в строке для нападения (победы)
 					for (int index = indexCol; index <= colFieldsize; index++)
 					{
-						if(countEmpty > 1) { break; }
-						if (cells[index].IsEmpty) { cellIndex = index; countEmpty++; }
+						if (cells[index].IsEmpty) { cellIndex = index; }
 						else if (cells[index].Value == _currentPlayer.Fishka) { countFilled++; }
 						else if (cells[index].Value != _currentPlayer.Fishka) { countEnemyFilled++; }
 					}
-					if (countFilled == _fieldSize - 1 && cellIndex > 0) { goto makeStep; }
-					else if (countEnemyFilled == _fieldSize - 1 && cellIndex > 0) { goto makeStep; }
+					if (countEnemyFilled == _fieldSize - 1 && cellIndex > 0) { goto makeStep; }
+					else if (countFilled == _fieldSize - 1 && cellIndex > 0) { goto makeStep; }
 
 
-					indexCol += _fieldSize;
+					indexCol += colFieldsize;
 					colFieldsize += _fieldSize;
 					countFilled = 0;
 					cellIndex = 0;
 					countEnemyFilled = 0;
-					countEmpty = 0;
 
 					//перебирает ячейки в колонке для нападения (победы)
 					for (int index = rc; index <= (_fieldSize * _fieldSize) - (_fieldSize - rc); index += _fieldSize)
 					{
-						if (countEmpty > 1) { break; }
-						if (cells[index].IsEmpty) { cellIndex = index; countEmpty++; }
+						if (cells[index].IsEmpty) { cellIndex = index; }
 						else if (cells[index].Value == _currentPlayer.Fishka) { countFilled++; }
 						else if (cells[index].Value != _currentPlayer.Fishka) { countEnemyFilled++; }
 					}
@@ -216,16 +190,14 @@ class Game
 					countFilled = 0;
 					cellIndex = 0;
 					countEnemyFilled = 0;
-                    countEmpty = 0;
-
-                }
+				}
 
 				//ход в ячейку по диагонали слева на право
 				for (int index = 1; index <= _fieldSize * _fieldSize; index += _fieldSize + 1)
 				{
 					if (cells[index].IsEmpty) { cellIndex = index; }
-					else if (cells[index].Value == cells[_fieldSize + 1].Value && !cells[index].IsEmpty) { countFilled++; }
-					else if (cells[index].Value != cells[_fieldSize + 1].Value && !cells[index].IsEmpty) { countEnemyFilled++; }
+					else if (cells[index].Value == _currentPlayer.Fishka && !cells[index].IsEmpty) { countFilled++; }
+					else if (cells[index].Value != _currentPlayer.Fishka && !cells[index].IsEmpty) { countEnemyFilled++; }
 				}
 
 				if (countFilled == _fieldSize - 1 && cellIndex > 0) { goto makeStep; }
@@ -240,8 +212,8 @@ class Game
 				for (int index = _fieldSize; index < _fieldSize * _fieldSize; index += _fieldSize - 1)
 				{
 					if (cells[index].IsEmpty) { cellIndex = index; }
-					else if (cells[index].Value == cells[_fieldSize + 1].Value && !cells[index].IsEmpty) { countFilled++; }
-					else if (cells[index].Value != cells[_fieldSize + 1].Value && !cells[index].IsEmpty) { countEnemyFilled++; }
+					else if (cells[index].Value == _currentPlayer.Fishka && !cells[index].IsEmpty) { countFilled++; }
+					else if (cells[index].Value != _currentPlayer.Fishka && !cells[index].IsEmpty) { countEnemyFilled++; }
 				}
 
 				if (countFilled == _fieldSize - 1 && cellIndex > 0) { goto makeStep; }
@@ -252,8 +224,6 @@ class Game
 				countEnemyFilled = 0;
 			}
 		}
-
-
 		makeStep:
 
 		if (cellIndex == 0) { do { cellIndex = rnd.Next(1, _fieldSize * _fieldSize + 1); } while (!cells[cellIndex].IsEmpty); }
@@ -302,66 +272,60 @@ class Game
 
 	private bool _checkFinal()
 	{
-
 		int countFilled = 0;
+		int countEnemyFilled = 0;
 		int indexCol = 1;
 		int colFieldsize = _fieldSize;
-
+		//перебирает ячейки в строке для нападения (победы)
+		checkRow:
+		for (int index = indexCol; index <= _fieldSize; index++)
+		{
+			if (cells[index].IsEmpty) { break; }
+			else if (cells[index].Value == _currentPlayer.Fishka) { countFilled++; }
+			else { countEnemyFilled++; }
+		}
+		if (countEnemyFilled == _fieldSize || countFilled == _fieldSize) { return true; }
+		else
+		{
+			indexCol += colFieldsize;
+			colFieldsize += _fieldSize;
+			if (indexCol <= _fieldSize * _fieldSize) { goto checkRow; }
+		}
+		countFilled = 0;
+		countEnemyFilled = 0;
 		for (int rc = 1; rc <= _fieldSize; rc++)
 		{
-			//перебирает ячейки в строке для нападения (победы)
-			for (int index = indexCol; index <= colFieldsize; index++)
-			{
-				if (cells[index].IsEmpty || cells[index].Value != CurrentPlayer.Fishka) { break; }
-				else { countFilled++; }
-			}
-			if (countFilled == _fieldSize) { return true; }
-
-			indexCol = _fieldSize * rc + 1;
-			colFieldsize += _fieldSize;
-			countFilled = 0;
-
 			//перебирает ячейки в колонке для нападения (победы)
 			for (int index = rc; index <= (_fieldSize * _fieldSize) - (_fieldSize - rc); index += _fieldSize)
 			{
-				if (index + _fieldSize != _fieldSize * _fieldSize)
-				{
-					if (cells[index].IsEmpty || cells[index].Value != CurrentPlayer.Fishka) { break; }
-					else { countFilled++; }
-				}
+				if (cells[index].IsEmpty) { break; }
+				else if (cells[index].Value == _currentPlayer.Fishka) { countFilled++; }
+				else { countEnemyFilled++; }
 			}
-
-			if (countFilled == _fieldSize) { return true; }
+			if (countEnemyFilled == _fieldSize || countFilled == _fieldSize) { return true; }
 			countFilled = 0;
+			countEnemyFilled = 0;
 		}
-
 		//ход в ячейку по диагонали слева на право
 		for (int index = 1; index <= _fieldSize * _fieldSize; index += _fieldSize + 1)
 		{
-			if (cells[index].IsEmpty || cells[index].Value != CurrentPlayer.Fishka) { break; }
-			else { countFilled++; }
+			if (cells[index].IsEmpty) { break; }
+			else if (cells[index].Value == CurrentPlayer.Fishka) { countFilled++; } else { countEnemyFilled++; }
 		}
-
-		if (countFilled == _fieldSize) { return true; }
+		if (countEnemyFilled == _fieldSize || countFilled == _fieldSize) { return true; }
 		countFilled = 0;
-
-
-		//ход в ячейку по диагонали справа на лево
-
+		countEnemyFilled = 0;
+		//ход в ячейку по диагонали справа на лево 
 		for (int index = _fieldSize; index < _fieldSize * _fieldSize; index += _fieldSize - 1)
 		{
-			if (cells[index].IsEmpty || cells[index].Value != CurrentPlayer.Fishka) { break; }
-			else { countFilled++; }
+			if (cells[index].IsEmpty) { break; }
+			else if (cells[index].Value == CurrentPlayer.Fishka) { countFilled++; } else { countEnemyFilled++; }
 		}
-
-		if (countFilled == _fieldSize) { return true; }
-
+		if (countEnemyFilled == _fieldSize || countFilled == _fieldSize) { return true; }
+		countFilled = 0;
+		countEnemyFilled = 0;
 		return false;
 	}
-
-
-
-
 	#endregion
 
 	#region  Отрисовка 
@@ -437,6 +401,61 @@ class Game
 		return numbers + "\n" + result;
 	}
 
+	#endregion
+
+	#region Сериализация
+	private static Game Deserialize(string strData)
+	{
+		//разбивка на массив
+		string[] strArray = strData.Split(new char[] { '\n' });
+		//проверка на пустоту и на кол-во строк в файле
+		if (strArray == null || strArray.Length != 6) { throw new Exception("Ошибка в чтении файла "); }
+		//проверка на текущего игрока и на режим игры
+		if (int.Parse(strArray[2]) > 1 || int.Parse(strArray[2]) < 0 || int.Parse(strArray[3]) > 1 || int.Parse(strArray[3]) < 0) { throw new Exception("Ошибка в чтении файла "); }
+		//проверка на размер поля
+		if (strArray[4].Length != 1 || string.IsNullOrWhiteSpace(strArray[4]) || strArray[5].Length != int.Parse(strArray[4]) * int.Parse(strArray[4]))
+		{ throw new Exception("Ошибка в чтении файла "); } 
+		return new Game(strArray[0], strArray[1], int.Parse(strArray[2]), int.Parse(strArray[3]), int.Parse(strArray[4]), strArray[5]);
+	}
+	private string Serialize()
+	{//запишем значения клеток
+		string strCells = "";
+		foreach (Cell cell in cells) { if (cell != null) { strCells += cell.Serialize(); } }
+
+		return
+			  _player1.Serialize() + "\n" +
+			  _player2.Serialize() + "\n" +
+			  (_currentPlayer == _player1 ? "0" : "1") + "\n" +
+			  (int)_gameMode + "\n" +
+			  _fieldSize + "\n" +
+			  strCells;
+	}
+	#endregion
+
+	#region Загрузка и выгрузка
+	public void Save(string strFileName)
+	{
+		//проверка пути к файлу
+		if (string.IsNullOrEmpty(strFileName)) { throw new Exception($"Путь к файлу указан не верно"); }
+		//проверка на расширение файла
+		if (!strFileName.EndsWith(".kn")) { throw new Exception("Расширение файла должно быть .kn"); }
+		//проверка на наличие такого файла по указанному пути
+		if (!File.Exists(strFileName)) { throw new Exception("Такого файла не существует"); }
+
+		//сериализация файла
+		string gameData = Serialize();
+		//сохранение по указанному пути
+		File.WriteAllText(strFileName, gameData, System.Text.Encoding.UTF8);
+	}
+	public static Game Load(string strFileName)
+	{
+		//проверка файла
+		if (string.IsNullOrEmpty(strFileName)) { throw new ArgumentException("Путь к файлу указан не верно"); }
+		if (!strFileName.EndsWith(".kn")) { throw new ArgumentException("Расширение файла должно быть .kn"); }
+		if (!File.Exists(strFileName)) { throw new FileNotFoundException("Такого файла не существует"); }
+		string gameData = File.ReadAllText(strFileName, System.Text.Encoding.UTF8);
+		return Deserialize(gameData);
+	}
 	#endregion
 }
 

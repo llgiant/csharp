@@ -6,23 +6,20 @@ using System.Threading.Tasks;
 public enum PlayerType
 {
     Human = 0,
-    Robot1 = 1,
-    Robot2 = 2
+    Robot = 1
 }
 class Player
 {
     #region " Локальные переменные "
     private string _name = " ";
     private PlayerType _playerType = PlayerType.Human;
-    private string _fishka = "0";
+    private string _fishka = "о";
     #endregion
 
     #region " Конструкторы "
     public Player() : this("Null", PlayerType.Human, "o") { }
-    public Player(String name) : this(name, PlayerType.Human) { }
-    public Player(String name, PlayerType PlayerType) : this(name, PlayerType.Human, "o") { }
 
-    public Player(String name, PlayerType playerType, string fishka)
+    public Player(string name, PlayerType playerType, string fishka)
     {
         Name = name;
         Type = playerType;
@@ -36,7 +33,7 @@ class Player
         get { return _playerType; }
         set
         {
-            if (value > (PlayerType)2 || value < 0) { throw new Exception("В игре всего 3 типа игрока"); }
+            if (value > (PlayerType)1 || value < 0) { throw new Exception("В игре всего 3 типа игрока"); }
             _playerType = value;
         }
     }
@@ -56,7 +53,7 @@ class Player
         set
         {
             if (!"xo".Contains(value)) { return; }
-            _fishka = value;
+            _fishka = value.ToLower();
         }
     }
 
@@ -77,6 +74,21 @@ class Player
         }
         return string.Join("-", split);
     }
-    #endregion 
+    #endregion
 
+    #region Сериализация
+    public static Player Deserialize(string strData)
+    {
+        //проверки strData
+        if (string.IsNullOrEmpty(strData)) { throw new ArgumentException("Данные игры отсутствуют"); }
+
+        string[] strArrayData = strData.Split(new char[] { '|' });
+
+        //проверки strArrayData
+        if (strArrayData == null || strArrayData.Length != 3) { throw new Exception("Данные не верные или повреждены"); }
+
+        return new Player(strArrayData[0], (PlayerType)int.Parse(strArrayData[1]), strArrayData[2]);
+    }
+    public string Serialize() { return string.Join("|", new string[] { _name, _playerType == PlayerType.Human ? "0" : "1", _fishka }); }
+    #endregion
 }
