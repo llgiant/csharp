@@ -8,67 +8,23 @@ class Test
 {
     static void Main(string[] args)
     {
-        ShoppingCart cart = new ShoppingCart { Products = Product.GetProducts()};      
-        decimal price = cart.TotalPrice();
-        Console.WriteLine($"Total: {price:C2}");
+        double I = MathLib.E;// Ошибка, значение константы нельзя изменить
+        MathLib.addNum();
+
+        Console.WriteLine(MathLib.result);
         Console.ReadKey();
     }
 
 }
-
-
-public  class Product
+class MathLib
 {
-    public string Name { get; set; }
-    public decimal? Price { get; set; }
-
-    public static Product[] GetProducts()
+    public const double PI = 3.141;
+    public const double E = 2.81;
+    public const double result;
+    public static void addNum()
     {
-        Product onion = new Product { Name = "Onion", Price = 245.39M };
-        Product cabbige = new Product { Name = "Cabbidge", Price = 239.88M };
-        return new Product[] { onion, cabbige };
+        result = PI + E;
     }
 }
 
-public class ShoppingCart
-{
-    public IEnumerable<Product> Products { get; set; }
-}
-
-public static class MyExtensionMethods
-{
-    public static Decimal TotalPrice(this ShoppingCart cartProp)
-    {
-        decimal total = 0;
-
-        foreach(Product prod in cartProp.Products)
-        {
-            total += prod?.Price ?? 0;
-        }
-
-
-        return total;
-    }
-}
-/*
-/main.html
-/about.html
-/portfolio.html
-/portfolio/work-{workId}.html
-/blog.html
-/blog/post/{postID}.html
-/{filePath}.txt
-/user/avatar/{userID}.jpg
-/promo-{promoID}.html
-/blog/year-{year}.html
-/blog/year-{year}/month-{month}/list.html
-/blog/tag-{tagName}.html
-/orders.html
-/orders/{date}.html?sort={sort}&view={view}
-/chat/{chatID}/user-1-{user1ID}/user-2-{user2ID}.html
-/app/{scriptPath}.js
-/app/style/{scriptPath}.css
-/app/style/images/{ imageFileName } . {  extension  }
-{литерал}{заполнитель} { } {заполнитель} 
-*/
 

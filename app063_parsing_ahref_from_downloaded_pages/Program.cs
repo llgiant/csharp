@@ -46,7 +46,6 @@ class Program
             if (caret < 0) { goto EndLoop; }
             string path = URL.AbsoluteUri + page[index].Substring(startHref, caret - startHref);
             caret = -1;
-            // Console.WriteLine($"Waiting for an answer from: {path}");
             Thread HttpResponseThread = new Thread(HttpResponse);
             HttpResponseThread.IsBackground = false;
             HttpResponseThread.Start(path);

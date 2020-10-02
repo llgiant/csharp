@@ -82,6 +82,7 @@
     <Compile Include="Pattern.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository.cs" />
     <Compile Include="Template.cs" />
   </ItemGroup>
   <ItemGroup>

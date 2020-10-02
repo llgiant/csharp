@@ -24,7 +24,8 @@ abstract class BaseHandler
             httpContext.Response.ContentLength64 = Buffer.Length;
             using (BinaryWriter bw = new BinaryWriter(httpContext.Response.OutputStream))
             { bw.Write(Buffer); }
-            httpContext.Response.ContentLength64 = Buffer.Length;
+            //ошибка надо проверить
+            //httpContext.Response.ContentLength64 = Buffer.Length;
             httpContext.Response.StatusCode = 200;
             httpContext.Response.StatusDescription = "Ok";
         }

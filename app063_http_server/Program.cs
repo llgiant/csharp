@@ -19,12 +19,12 @@ class Program
         Console.WriteLine("Web server test.com");
         Console.WriteLine("========================================================================");
         Console.WriteLine();
-        appBegin:
+    appBegin:
 
         //Заполнение спист=ка шаблонов url
         RoutesTemplates = FillTemplates();
 
-        startServer:
+    startServer:
         try
         {
             Thread httpListenerThread = new Thread(StartListening);
@@ -46,7 +46,7 @@ class Program
         httpListener.Prefixes.Add("http://www.test.com/");
         httpListener.Prefixes.Add("http://test.com/");
         httpListener.Start();
-        Console.WriteLine("{0}:Сервер запущен!", GetDate());
+        Console.WriteLine($"{GetDate()}:Сервер запущен!");
 
         while (httpListener.IsListening)
         {
@@ -94,7 +94,7 @@ class Program
 
         }
 
-        RunHandler:
+    RunHandler:
         if (Handler == null) { Handler = new StatusCodeHandler_404(); }
         try
         {
@@ -196,7 +196,7 @@ class Program
     public static List<Template> FillTemplates()
     {
         List<Template> templates = new List<Template>();
-        Object staticHandler = Activator.CreateInstance(typeof(StaticHandler));
+        object staticHandler = Activator.CreateInstance(typeof(StaticHandler));
 
 
         //templates.Add(new Template("/portfolio/work-{workid}.html", new Dictionary<string, validateProc> { { "workid", Template.validate_workID } }, staticHandler));
@@ -204,19 +204,23 @@ class Program
         templates.Add(new Template("/", null, staticHandler));
 
         templates.Add(
-            new Template("/{imageFileName}.{extension}",
-            new Dictionary<string, validateProc>
-            {
+            new Template("/{imageFileName}.{extension}", new Dictionary<string, validateProc>{
                 { "imageFileName",  Template.validate_imageFileName },
                 { "extension",  Template.validate_extension }
-               }, staticHandler));
+                                                                                                 }, staticHandler));
 
-        //templates.Add(
-        //   new Template("/style/{stylePath}.css",
-        //   new Dictionary<string, validateProc>
-        //      {
-        //                    { "stylePath",  Template.validate_stylePath }
-        //         }, staticHandler));
+        templates.Add(
+           new Template("/style/{stylepath}.css",
+           new Dictionary<string, validateProc>
+              {
+                            { "stylepath",  Template.validate_stylePath }
+                 }, staticHandler));
+        templates.Add(
+           new Template("/api/{apinumbers}",
+           new Dictionary<string, validateProc>
+              {
+                            { "apinumbers",  Template.validate_apinumbers }
+                 }, staticHandler));
 
 
         templates.Add(
@@ -234,13 +238,13 @@ class Program
                 { "extension",  Template.validate_extension }
                }, staticHandler));
 
-        templates.Add(
-           new Template("/video/{imageFileName}.{extension}",
-           new Dictionary<string, validateProc>
-           {
-                { "imageFileName",  Template.validate_imageFileName },
-                { "extension",  Template.validate_videoextension }
-              }, staticHandler));
+        //templates.Add(
+        //   new Template("/video/{imageFileName}.{extension}",
+        //   new Dictionary<string, validateProc>
+        //   {
+        //        { "imageFileName",  Template.validate_imageFileName },
+        //        { "extension",  Template.validate_videoextension }
+        //      }, staticHandler));
 
         //templates.Add(new Template("/main.html", null, staticHandler));
         //templates.Add(new Template("/about.html", null, staticHandler));

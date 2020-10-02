@@ -193,6 +193,15 @@ class Template
         try { int number = int.Parse(value); } catch (Exception) { throw new Exception("Не соответствующий формат у заполнителя"); }
         return true;
     }
+
+    internal static bool validate_apinumbers(string value)
+    {
+        //workID - целое число, длина 9 знаков, не может начинаться с нуля       
+        if (string.IsNullOrEmpty(value) || value.Length != 9) { throw new Exception("Не соответствующий формат у заполнителя"); }
+        try { int number = int.Parse(value); } catch (Exception) { throw new Exception("Не соответствующий формат у заполнителя"); }
+        return true;
+    }
+
     public static bool validate_filePath(string value)
     {
         //filePath - только буквы, цифры, _, - / . (без пар, символы не могут быть рядом)
