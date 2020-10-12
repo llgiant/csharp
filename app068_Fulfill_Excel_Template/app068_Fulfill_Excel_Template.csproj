@@ -61,7 +61,7 @@
     <None Include="Template\example.xlsx" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Result\" />
+    <Folder Include="Task\" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="Microsoft.Office.Core">
